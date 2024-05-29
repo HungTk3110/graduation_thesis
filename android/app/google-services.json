@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "514784645652",
+    "project_id": "graduation-thesis-8b064",
+    "storage_bucket": "graduation-thesis-8b064.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514784645652:android:3589209c67d64495e10d01",
+        "android_client_info": {
+          "package_name": "com.example.untitled1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnZFuIWjq8Let1ayBDhyR6P6aqOdqWN74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
