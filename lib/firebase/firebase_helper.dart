@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:untitled1/models/model/user_local.dart';
 
@@ -31,5 +34,33 @@ class FireBaseHelper {
         print(e);
       }
     }
+  }
+
+  Future<void> updateProfile({
+    required String uid,
+    required Map<String, dynamic> user,
+  }) async {
+    try {
+      await db.collection('users').doc(uid).update(user);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future<String> getImageUrlByLocal({
+    required String userUid,
+    required File file,
+  }) async {
+    // final size = getFileSize(file);
+    final name = file.path.split('/').last;
+    print('size: , name: $name, path: ${file.path}');
+
+    final storageRef = FirebaseStorage.instance.ref();
+    final imagesRef = storageRef.child(userUid).child('images/$name');
+    final snap = await imagesRef.putFile(file);
+    final urlFile = await snap.ref.getDownloadURL();
+    return urlFile;
   }
 }

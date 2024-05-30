@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_linux
+  file_selector_linux
   irondash_engine_context
   simple_animation_progress_bar
   super_native_extensions

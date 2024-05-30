@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:label="untitled1"
         android:name="${applicationName}"
@@ -6,6 +8,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:requestLegacyExternalStorage="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"

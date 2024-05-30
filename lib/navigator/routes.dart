@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untitled1/navigator/fade_page_route.dart';
 import 'package:untitled1/navigator/transitions.dart';
 import 'package:untitled1/ui/home/home_page.dart';
+import 'package:untitled1/ui/profile/profile_cubit.dart';
+import 'package:untitled1/ui/profile/profile_page.dart';
 
 enum Routes {
   home,
+  profile,
 }
 
 class _Paths {
   static const String home = "/home";
+  static const String profile = "/profile";
 
   static const Map<Routes, String> _pathMap = {
     Routes.home: _Paths.home,
+    Routes.profile: _Paths.profile,
   };
 
-static String of(Routes route) => _pathMap[route] ?? home;
+  static String of(Routes route) => _pathMap[route] ?? home;
 }
 
 class AppNavigator {
@@ -32,8 +38,19 @@ class AppNavigator {
       //       page: const PremiumPage());
       case _Paths.home:
         return Transitions(
-            transitionType: TransitionType.slideLeft,
-            page: const HomePage());
+            transitionType: TransitionType.slideLeft, page: const HomePage());
+      case _Paths.profile:
+        return Transitions(
+          transitionType: TransitionType.slideLeft,
+          page: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => ProfileCubit(),
+              )
+            ],
+            child: const ProfilePage(),
+          ),
+        );
       default:
         return FadeRoute(page: const HomePage());
     }

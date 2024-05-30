@@ -23,7 +23,6 @@ class UserAuthenticationCubit extends Cubit<UserAuthenticationState> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passWordSignUpController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
-  final _firestore = FirebaseFirestore.instance;
 
   UserAuthenticationCubit() : super(const UserAuthenticationState());
 
