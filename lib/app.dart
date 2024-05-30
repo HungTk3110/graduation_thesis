@@ -4,7 +4,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:untitled1/cubit/app/app_config_bloc.dart';
 import 'package:untitled1/generated/l10n.dart';
-import 'package:untitled1/ui/login/login_page.dart';
+import 'package:untitled1/navigator/routes.dart';
+import 'package:untitled1/ui/user_authentication/user_authentication_cubit.dart';
+import 'package:untitled1/ui/user_authentication/user_authentication_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
-      child:  BlocBuilder<AppConfigBloc, AppConfigState>(
+      child: BlocBuilder<AppConfigBloc, AppConfigState>(
         buildWhen: (previousState, state) {
           if (previousState.locale != state.locale) return true;
           return false;
@@ -30,6 +32,8 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+            navigatorKey: AppNavigator.navigatorKey,
+            onGenerateRoute: AppNavigator.onGenerateRoute,
             supportedLocales: S.delegate.supportedLocales,
             title: 'Flutter Demo',
             theme: ThemeData(
@@ -51,7 +55,14 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: const LoginPage(),
+            home: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => UserAuthenticationCubit(),
+                )
+              ],
+              child: const UserAuthenticationPage(),
+            ),
           );
         },
       ),

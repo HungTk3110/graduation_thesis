@@ -13,6 +13,7 @@ class AppLabelTextField extends StatelessWidget {
   final BoxConstraints? prefixIconConstraints;
   final TextEditingController? textEditingController;
   final TextStyle? textStyle;
+  final bool obscureText;
   final String hintText;
   final TextStyle? hintStyle;
   final ValueChanged<String>? onChanged;
@@ -25,7 +26,7 @@ class AppLabelTextField extends StatelessWidget {
   final FocusNode? focusNode;
 
   const AppLabelTextField({
-    Key? key,
+    super.key,
     this.labelText = "",
     this.labelStyle,
     this.highlightText = "*",
@@ -42,11 +43,12 @@ class AppLabelTextField extends StatelessWidget {
     this.inputFormatters,
     this.enabled = true,
     this.maxLength,
+    this.obscureText = false,
     this.background,
     this.prefixIcon,
     this.prefixIconConstraints,
     this.focusNode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,9 +65,10 @@ class AppLabelTextField extends StatelessWidget {
               focusNode: focusNode,
               onSubmitted: onSubmitted,
               onChanged: onChanged,
+              obscureText:obscureText,
               controller: textEditingController,
               style: textStyle ?? TextStyle(
-                color: Color(0xff303030),
+                color: const Color(0xff303030),
                 fontSize: 14.r,
                 fontWeight: FontWeight.w400
               ),
@@ -112,7 +115,7 @@ class AppLabelTextField extends StatelessWidget {
                     const BoxConstraints(maxHeight: 32, maxWidth: 32),
                 counterText: "",
               ),
-              cursorColor: Colors.white,
+              cursorColor: Colors.black,
               keyboardType: textInputType,
               inputFormatters: inputFormatters,
             );

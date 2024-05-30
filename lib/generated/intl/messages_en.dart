@@ -21,5 +21,20 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{};
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "logIn": MessageLookupByLibrary.simpleMessage("Log In"),
+        "signUp": MessageLookupByLibrary.simpleMessage("Sign Up"),
+        "text_field_can_empty":
+            MessageLookupByLibrary.simpleMessage("This field cannot be empty"),
+        "text_input_email_valid":
+            MessageLookupByLibrary.simpleMessage("Please input email valid"),
+        "text_input_phone_number_valid": MessageLookupByLibrary.simpleMessage(
+            "Please input phone number valid"),
+        "text_input_url_valid":
+            MessageLookupByLibrary.simpleMessage("Please input url valid"),
+        "usernameOrEmail":
+            MessageLookupByLibrary.simpleMessage("Username or E-mail"),
+        "valitae_pasword": MessageLookupByLibrary.simpleMessage(
+            "Password cannot be less than 8 characters")
+      };
 }

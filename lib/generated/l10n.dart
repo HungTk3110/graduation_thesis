@@ -49,6 +49,86 @@ class S {
   static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
+
+  /// `Log In`
+  String get logIn {
+    return Intl.message(
+      'Log In',
+      name: 'logIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign Up`
+  String get signUp {
+    return Intl.message(
+      'Sign Up',
+      name: 'signUp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Username or E-mail`
+  String get usernameOrEmail {
+    return Intl.message(
+      'Username or E-mail',
+      name: 'usernameOrEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field cannot be empty`
+  String get text_field_can_empty {
+    return Intl.message(
+      'This field cannot be empty',
+      name: 'text_field_can_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please input email valid`
+  String get text_input_email_valid {
+    return Intl.message(
+      'Please input email valid',
+      name: 'text_input_email_valid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please input phone number valid`
+  String get text_input_phone_number_valid {
+    return Intl.message(
+      'Please input phone number valid',
+      name: 'text_input_phone_number_valid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please input url valid`
+  String get text_input_url_valid {
+    return Intl.message(
+      'Please input url valid',
+      name: 'text_input_url_valid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password cannot be less than 8 characters`
+  String get valitae_pasword {
+    return Intl.message(
+      'Password cannot be less than 8 characters',
+      name: 'valitae_pasword',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

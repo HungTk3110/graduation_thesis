@@ -1,1 +1,10 @@
-{}
+{
+  "logIn": "Log In",
+  "signUp": "Sign Up",
+  "usernameOrEmail": "Username or E-mail",
+  "text_field_can_empty": "This field cannot be empty",
+  "text_input_email_valid": "Please input email valid",
+  "text_input_phone_number_valid": "Please input phone number valid",
+  "text_input_url_valid": "Please input url valid",
+  "valitae_pasword": "Password cannot be less than 8 characters"
+}

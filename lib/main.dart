@@ -7,6 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:untitled1/app.dart';
 import 'package:untitled1/cubit/app/app_config_bloc.dart';
 import 'package:untitled1/firebase_options.dart';
+import 'package:untitled1/ui/home/home_cubit.dart';
+import 'package:untitled1/ui/user_authentication/user_authentication_cubit.dart';
 
 void main() async{
   await ScreenUtil.ensureScreenSize();
@@ -20,6 +22,8 @@ void main() async{
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AppConfigBloc()),
+        BlocProvider(create: (_) => UserAuthenticationCubit()),
+        BlocProvider(create: (_) => HomeCubit()),
       ],
       child: const MyApp(),
     ),
