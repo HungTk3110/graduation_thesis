@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:untitled1/navigator/routes.dart';
+import 'package:untitled1/shared_view/app_cache_image.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/home/components/nav_drawer.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
@@ -48,16 +49,21 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           GestureDetector(
-            onTap: (){
+            onTap: () {
               AppNavigator.push(Routes.profile);
             },
             child: Container(
               width: 46.r,
               height: 46.r,
               margin: EdgeInsets.only(right: 25.w),
-              decoration: BoxDecoration(
-                  color: Colors.green, borderRadius: BorderRadius.circular(10.r)),
-              child: SizedBox(),
+              child: BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state) {
+                  return AppCacheImage(
+                    url: state.userLocal?.avatar ?? '',
+                    borderRadius: 10.r,
+                  );
+                },
+              ),
             ),
           )
         ],

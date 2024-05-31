@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:untitled1/models/model/categories.dart';
 import 'package:untitled1/models/model/user_local.dart';
 
 class FireBaseHelper {
@@ -62,5 +63,40 @@ class FireBaseHelper {
     final snap = await imagesRef.putFile(file);
     final urlFile = await snap.ref.getDownloadURL();
     return urlFile;
+  }
+
+  Future<List<Categories>> getAllCategories({
+    required String uid,
+  }) async {
+    List<Categories> listCategories = [];
+    try {
+      await db
+          .collection('categories')
+          .doc(uid)
+          .get()
+          .then((DocumentSnapshot doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        data.forEach((key, value) {
+          listCategories.add(Categories.fromDbMap(value));
+        });
+      });
+
+      return listCategories;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  Future<void> addCategories({
+    required Categories categories,
+    required String uid,
+  }) async {
+    try {
+      await db.collection('users').doc(uid).set(categories.toDbMap());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
   }
 }
