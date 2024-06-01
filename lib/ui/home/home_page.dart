@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/app_cache_image.dart';
+import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/home/components/nav_drawer.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
@@ -16,13 +17,20 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late HomeCubit cubit;
   GlobalKey<ScaffoldState> _key = GlobalKey();
+  late TabController _tabController;
 
   @override
   void initState() {
     cubit = BlocProvider.of(context);
+    _tabController = TabController(
+      initialIndex: 0,
+      length: 3,
+      animationDuration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
     cubit.initData(context);
     super.initState();
   }
@@ -131,14 +139,99 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SizedBox(height: 25.h),
-          Text(
-            'My Tasks',
-            style: TextStyle(
-              color: const Color(0xff303030),
-              fontSize: 15.r,
-              fontWeight: FontWeight.w500,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Category',
+                style: TextStyle(
+                  color: const Color(0xff303030),
+                  fontSize: 15.r,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  DialogBuilder(context).showDialogAddCategory(context);
+                },
+                child: Container(
+                  width: 40.r,
+                  height: 40.r,
+                  margin: EdgeInsets.only(right: 25.w),
+                  decoration: BoxDecoration(
+                      color: Color(0xffF26950),
+                      borderRadius: BorderRadius.circular(10.r)),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            ],
+          ),
+          SizedBox(height: 12.h),
+          Container(
+            width: 152.w,
+            height: 210.h,
+            decoration: BoxDecoration(
+              color: Color(0xff5486E9),
+              borderRadius: BorderRadius.circular(14.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0xff5486E9).withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 7,
+                  offset: Offset(0, 10), // changes position of shadow
+                ),
+              ],
+              image: DecorationImage(
+                  image: AssetImage('assets/image/bg_collection.png'),
+                  fit: BoxFit.fill),
+            ),
+            child: Column(
+              children: [],
             ),
           ),
+          SizedBox(height: 12.h),
+          Row(
+            children: [
+              SizedBox(
+                width: 300.w,
+                child: TabBar(
+                  padding: EdgeInsets.zero,
+                  dividerHeight: 0,
+                  controller: _tabController,
+                  tabs: [
+                    Text(
+                      'Category',
+                      style: TextStyle(
+                        color: const Color(0xff303030),
+                        fontSize: 15.r,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Category',
+                      style: TextStyle(
+                        color: const Color(0xff303030),
+                        fontSize: 15.r,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      'Category',
+                      style: TextStyle(
+                        color: const Color(0xff303030),
+                        fontSize: 15.r,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );

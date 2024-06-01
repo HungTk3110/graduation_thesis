@@ -92,7 +92,7 @@ class FireBaseHelper {
     required String uid,
   }) async {
     try {
-      await db.collection('users').doc(uid).set(categories.toDbMap());
+      await db.collection('categories').doc(uid).set(categories.toDbMap());
     } catch (e) {
       if (kDebugMode) {
         print(e);
