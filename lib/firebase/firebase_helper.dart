@@ -65,25 +65,23 @@ class FireBaseHelper {
     return urlFile;
   }
 
-  Future<List<Categories>> getAllCategories({
-    required String uid,
-  }) async {
-    List<Categories> listCategories = [];
+  Future<List<Categories>> getAllCategories({required String uid}) async {
     try {
-      await db
-          .collection('categories')
+      QuerySnapshot querySnapshot = await db
+          .collection('database')
           .doc(uid)
-          .get()
-          .then((DocumentSnapshot doc) {
+          .collection('categories')
+          .get();
+
+      List<Categories> listCategories = querySnapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        data.forEach((key, value) {
-          listCategories.add(Categories.fromDbMap(value));
-        });
-      });
+        return Categories.fromDbMap(data);
+      }).toList();
 
       return listCategories;
     } catch (e) {
-      return [];
+      print("Error getting categories: $e");
+      return []; // Trả về danh sách rỗng nếu có lỗi
     }
   }
 
@@ -92,7 +90,11 @@ class FireBaseHelper {
     required String uid,
   }) async {
     try {
-      await db.collection('categories').doc(uid).set(categories.toDbMap());
+      await db
+          .collection('database')
+          .doc(uid)
+          .collection('categories')
+          .add(categories.toDbMap());
     } catch (e) {
       if (kDebugMode) {
         print(e);

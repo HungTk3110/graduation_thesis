@@ -113,6 +113,7 @@ class _UserAuthenticationPageState extends State<UserAuthenticationPage>
         fontWeight: FontWeight.w700,
       ),
       indicatorSize: TabBarIndicatorSize.tab,
+      indicatorPadding: EdgeInsets.only(right: 60.w),
       indicatorColor: const Color(0xffF26950),
       indicatorWeight: 2.r,
     );

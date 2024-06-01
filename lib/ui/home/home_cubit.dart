@@ -13,7 +13,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit() : super(const HomeState());
 
-  void initData(BuildContext context) async {
+  Future<void> initData(BuildContext context) async {
     final User? user = auth.currentUser;
     final uid = user?.uid;
     UserLocal userLocal =
@@ -25,5 +25,14 @@ class HomeCubit extends Cubit<HomeState> {
       categories: categories,
     ));
     debugPrint('hungtl${userLocal.userName}');
+  }
+
+  void onPressAddCategory(Categories categories) async {
+    final User? user = auth.currentUser;
+    final uid = user?.uid;
+    await FireBaseHelper().addCategories(
+      uid: uid ?? '',
+      categories: categories,
+    );
   }
 }
