@@ -23,6 +23,7 @@ class AppLabelTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
   final bool enabled;
   final int? maxLength;
+  final int? maxLines;
   final FocusNode? focusNode;
 
   const AppLabelTextField({
@@ -43,6 +44,7 @@ class AppLabelTextField extends StatelessWidget {
     this.inputFormatters,
     this.enabled = true,
     this.maxLength,
+    this.maxLines,
     this.obscureText = false,
     this.background,
     this.prefixIcon,
@@ -72,7 +74,7 @@ class AppLabelTextField extends StatelessWidget {
                 fontSize: 14.r,
                 fontWeight: FontWeight.w400
               ),
-              maxLines: 1,
+              maxLines: maxLines ?? 1,
               maxLength: maxLength,
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(

@@ -1,32 +1,22 @@
 part of 'task_cubit.dart';
 
 class TaskState extends Equatable {
-  final UserLocal? userLocal;
-  final File? fileAvatar;
-  final String? filePath;
+  final TaskEntity? taskEntity;
 
   const TaskState({
-    this.userLocal,
-    this.fileAvatar,
-    this.filePath,
+    this.taskEntity,
   });
 
   @override
   List<Object?> get props => [
-        userLocal,
-    fileAvatar,
-        filePath,
+        taskEntity,
       ];
 
   TaskState copyWith({
-    final UserLocal? userLocal,
-    final File? fileAvatar,
-    final String? filePath,
+    final TaskEntity? taskEntity,
   }) {
     return TaskState(
-      userLocal: userLocal ?? this.userLocal,
-      fileAvatar: fileAvatar ?? this.fileAvatar,
-      filePath: filePath ?? this.filePath,
+      taskEntity: taskEntity ?? this.taskEntity,
     );
   }
 }
