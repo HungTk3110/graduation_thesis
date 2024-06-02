@@ -90,11 +90,15 @@ class FireBaseHelper {
     required String uid,
   }) async {
     try {
-      await db
+      final docRef = db
           .collection('database')
           .doc(uid)
-          .collection('categories')
-          .add(categories.toDbMap());
+          .collection('categories');
+
+      categories.id = docRef.doc().id;
+      categories.createAt = DateTime.now().toIso8601String();
+      await
+      docRef.add(categories.toDbMap());
     } catch (e) {
       if (kDebugMode) {
         print(e);

@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:untitled1/models/model/categories.dart';
+import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/navigator/fade_page_route.dart';
 import 'package:untitled1/navigator/transitions.dart';
+import 'package:untitled1/ui/category/category_cubit.dart';
+import 'package:untitled1/ui/category/category_page.dart';
 import 'package:untitled1/ui/home/home_page.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
 import 'package:untitled1/ui/profile/profile_page.dart';
+import 'package:untitled1/ui/task/task_cubit.dart';
+import 'package:untitled1/ui/task/task_page.dart';
 
 enum Routes {
   home,
   profile,
+  category,
+  task,
 }
 
 class _Paths {
   static const String home = "/home";
   static const String profile = "/profile";
+  static const String category = "/category";
+  static const String task = "/task";
 
   static const Map<Routes, String> _pathMap = {
     Routes.home: _Paths.home,
     Routes.profile: _Paths.profile,
+    Routes.category: _Paths.category,
+    Routes.task: _Paths.task,
   };
 
   static String of(Routes route) => _pathMap[route] ?? home;
@@ -49,6 +61,38 @@ class AppNavigator {
               )
             ],
             child: const ProfilePage(),
+          ),
+        );
+      case _Paths.task:
+        var arguments = settings.arguments;
+        var task = arguments is TaskEntity ? arguments : null;
+        return Transitions(
+          transitionType: TransitionType.slideLeft,
+          page: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => TaskCubit(),
+              )
+            ],
+            child:  TaskPage(
+              task: task,
+            ),
+          ),
+        );
+      case _Paths.category:
+        var arguments = settings.arguments;
+        var categories = arguments is Categories ? arguments : null;
+        return Transitions(
+          transitionType: TransitionType.slideLeft,
+          page: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => CategoryCubit(),
+              )
+            ],
+            child: CategoryPage(
+              categories: categories,
+            ),
           ),
         );
       default:

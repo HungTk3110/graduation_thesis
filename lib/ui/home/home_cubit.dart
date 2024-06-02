@@ -2,9 +2,11 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 import 'package:untitled1/firebase/firebase_helper.dart';
 import 'package:untitled1/models/model/categories.dart';
 import 'package:untitled1/models/model/user_local.dart';
+import 'package:untitled1/navigator/routes.dart';
 
 part 'home_state.dart';
 
@@ -24,15 +26,29 @@ class HomeCubit extends Cubit<HomeState> {
       userLocal: userLocal,
       categories: categories,
     ));
-    debugPrint('hungtl${userLocal.userName}');
+    debugPrint('hungtl${categories.length}');
   }
 
-  void onPressAddCategory(Categories categories) async {
+  void onPressAddCategory(
+    Categories categories,
+    BuildContext context,
+  ) async {
     final User? user = auth.currentUser;
     final uid = user?.uid;
     await FireBaseHelper().addCategories(
       uid: uid ?? '',
       categories: categories,
+    );
+    List<Categories> categoriesNew =
+    await FireBaseHelper().getAllCategories(uid: uid ?? '');
+    emit(state.copyWith(categories: categoriesNew));
+    AppNavigator.pop();
+    toastification.show(
+      context: context,
+      // optional if you use ToastificationWrapper
+      title: const Text('Create Category Success'),
+      style: ToastificationStyle.fillColored,
+      autoCloseDuration: const Duration(seconds: 5),
     );
   }
 }

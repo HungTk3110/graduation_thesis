@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:untitled1/models/model/categories.dart';
+import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/home/components/nav_drawer.dart';
@@ -194,6 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   title: categoryName,
                                   color: color.value,
                                 ),
+                                context,
                               );
                             },
                             context: context);
@@ -291,30 +293,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Container itemCategory(
+  Widget itemCategory(
     Categories category,
   ) {
-    return Container(
-      width: 152.w,
-      height: 210.h,
-      margin: EdgeInsets.only(bottom: 18.h),
-      decoration: BoxDecoration(
-        color: Color(category.color ?? 0),
-        borderRadius: BorderRadius.circular(14.r),
-        boxShadow: [
-          BoxShadow(
-            color: Color(category.color ?? 0).withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: Offset(0, 6), // changes position of shadow
-          ),
-        ],
-        image: const DecorationImage(
-            image: AssetImage('assets/image/bg_collection.png'),
-            fit: BoxFit.fill),
-      ),
-      child: Column(
-        children: [Text(category.title ?? '')],
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: () {
+        AppNavigator.push(
+          Routes.category,
+          category,
+        );
+      },
+      child: Container(
+        width: 152.w,
+        height: 210.h,
+        margin: EdgeInsets.only(bottom: 18.h),
+        decoration: BoxDecoration(
+          color: Color(category.color ?? 0),
+          borderRadius: BorderRadius.circular(14.r),
+          boxShadow: [
+            BoxShadow(
+              color: Color(category.color ?? 0).withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 10,
+              offset: Offset(0, 6), // changes position of shadow
+            ),
+          ],
+          image: const DecorationImage(
+              image: AssetImage('assets/image/bg_collection.png'),
+              fit: BoxFit.fill),
+        ),
+        child: Column(
+          children: [Text(category.title ?? '')],
+        ),
       ),
     );
   }

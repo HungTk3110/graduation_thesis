@@ -23,6 +23,7 @@ class AddCategoryWidget extends StatefulWidget {
 class _AddCategoryWidgetState extends State<AddCategoryWidget> {
   TextEditingController controller = TextEditingController();
   Color colorSelected = AppContains.colorTheme.first;
+  bool canNextStep = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,15 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
           textEditingController: controller,
           hintText: 'Enter your Category name',
           background: Colors.grey.shade100,
+          onChanged: (value){
+            if(value.isNotEmpty){
+              setState(() {
+                canNextStep = true;
+              });
+            }else{
+              canNextStep = false;
+            }
+          },
         ),
         SizedBox(height: 20.h),
         Text(
@@ -116,17 +126,17 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: () {
+              onPressed: canNextStep ? () {
                 widget.onPressAdd(
                   controller.text,
                   colorSelected,
                 );
-              },
+              } : null,
               child: Container(
                 width: 40.r,
                 height: 40.r,
                 decoration: BoxDecoration(
-                    color: Color(0xffF26950),
+                    color: canNextStep ? Color(0xffF26950) : Colors.grey,
                     borderRadius: BorderRadius.circular(10.r)),
                 child: Icon(
                   Icons.navigate_next,
