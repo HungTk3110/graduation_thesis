@@ -1,13 +1,25 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:untitled1/models/enum/choose_document_type.dart';
+import 'package:untitled1/models/enum/choose_photo_type.dart';
+import 'package:untitled1/models/model/categories.dart';
 import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/app_contains.dart';
+import 'package:untitled1/shared_view/bottom_sheet_picker_document_type.dart';
+import 'package:untitled1/shared_view/bottom_sheet_picker_photo_type.dart';
+import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
+import 'package:untitled1/ui/home/home_cubit.dart';
 import 'package:untitled1/ui/task/task_cubit.dart';
+import 'package:untitled1/utils/app_permission_utils.dart';
 
 class TaskPage extends StatefulWidget {
   final TaskEntity? task;
@@ -23,6 +35,7 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   late TaskCubit cubit;
+  final TextEditingController iconController = TextEditingController();
 
   @override
   void initState() {
@@ -128,7 +141,8 @@ class _TaskPageState extends State<TaskPage> {
                               },
                               padding: EdgeInsets.zero,
                               child: AppLabelTextField(
-                                textEditingController: cubit.startTimeController,
+                                textEditingController:
+                                    cubit.startTimeController,
                                 background: Color(0xffFAFAFA),
                                 hintText: "Enter your start time",
                                 enabled: false,
@@ -157,7 +171,8 @@ class _TaskPageState extends State<TaskPage> {
                               },
                               padding: EdgeInsets.zero,
                               child: AppLabelTextField(
-                                textEditingController: cubit.startTimeController,
+                                textEditingController:
+                                    cubit.startTimeController,
                                 background: Color(0xffFAFAFA),
                                 hintText: "Enter your end time",
                                 enabled: false,
@@ -193,6 +208,69 @@ class _TaskPageState extends State<TaskPage> {
                     ),
                     textAlign: TextAlign.end,
                   ),
+                  SizedBox(height: 5.h),
+                  BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                    return DropdownMenu(
+                      initialSelection: state.categories.first,
+                      controller: iconController,
+                      // requestFocusOnTap is enabled/disabled by platforms when it is null.
+                      // On mobile platforms, this is false by default. Setting this to true will
+                      // trigger focus request on the text field and virtual keyboard will appear
+                      // afterward. On desktop platforms however, this defaults to true.
+                      requestFocusOnTap: true,
+                      // onSelected: (ColorLabel? color) {
+                      //   setState(() {
+                      //     selectedColor = color;
+                      //   });
+                      // },
+                      dropdownMenuEntries: state.categories
+                          .map<DropdownMenuEntry<Categories>>(
+                              (Categories color) {
+                        return DropdownMenuEntry<Categories>(
+                          value: color,
+                          label: color.title ?? '',
+                          // enabled: color.label != 'Grey',
+                          style: MenuItemButton.styleFrom(
+                            foregroundColor: Color(color.color ?? 0),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }),
+                  SizedBox(height: 20.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Document',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.r,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          _showBottomSheetPickTypeSelectImage();
+                        },
+                        child: Container(
+                          width: 40.r,
+                          height: 40.r,
+                          decoration: BoxDecoration(
+                              color: Color(0xffF26950),
+                              borderRadius: BorderRadius.circular(10.r)),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 100.h),
                 ],
               ),
             ),
@@ -230,5 +308,53 @@ class _TaskPageState extends State<TaskPage> {
         )
       ],
     );
+  }
+
+  Future<void> _showBottomSheetPickTypeSelectImage() async {
+    FocusScope.of(context).unfocus();
+    ChooseDocumentType? chooseType = await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return const BottomSheetPickerDocumentType();
+      },
+    );
+    if (chooseType != null) {
+      switch (chooseType) {
+        case ChooseDocumentType.photo:
+          _pickPhotoFromLibrary();
+          break;
+        case ChooseDocumentType.file:
+          _pickFile();
+          break;
+      }
+    }
+  }
+
+  Future<void> _pickPhotoFromLibrary() async {
+    final isDenied = await AppPermissionUtils.askPhotoLibraryPermission(() {
+      // TODO: - show dialog permission denied
+    });
+    if (isDenied) return;
+    final ImagePicker picker = ImagePicker();
+    final XFile? imageFile =
+    await picker.pickImage(source: ImageSource.gallery);
+    if (imageFile == null) return;
+    File file = File(imageFile.path);
+    print('Image uploaded to Firebase Storage: ');
+
+  }
+
+  Future<void> _pickFile() async {
+    final isDenied = await AppPermissionUtils.askFileMediaPermission(() {
+      // TODO: - show dialog permission denied
+    });
+    if (isDenied) return;
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result == null) return;
+    File file = File(result.files.single.path!);
+
   }
 }
