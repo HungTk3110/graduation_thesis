@@ -8,25 +8,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:untitled1/models/enum/choose_document_type.dart';
-import 'package:untitled1/models/enum/choose_photo_type.dart';
+import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/models/model/categories.dart';
-import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/app_contains.dart';
 import 'package:untitled1/shared_view/bottom_sheet_picker_document_type.dart';
-import 'package:untitled1/shared_view/bottom_sheet_picker_photo_type.dart';
 import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
+import 'package:untitled1/ui/task/task_argument.dart';
 import 'package:untitled1/ui/task/task_cubit.dart';
 import 'package:untitled1/utils/app_permission_utils.dart';
 
 class TaskPage extends StatefulWidget {
-  final TaskEntity? task;
+  final TaskArgument? taskArgument;
 
   const TaskPage({
     super.key,
-    required this.task,
+    required this.taskArgument,
   });
 
   @override
@@ -35,12 +34,40 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   late TaskCubit cubit;
-  final TextEditingController iconController = TextEditingController();
+  late TextEditingController iconController;
+
+  late TextEditingController titleController;
+
+  late TextEditingController noteController;
 
   @override
   void initState() {
     cubit = BlocProvider.of<TaskCubit>(context);
+    if (widget.taskArgument?.taskType == TaskType.create) {
+      initCreate();
+    } else {
+      initEdit();
+    }
     super.initState();
+  }
+
+  void initCreate() {
+    iconController =
+        TextEditingController(text: widget.taskArgument?.task?.category ?? '');
+    titleController = TextEditingController(text: 'Type your Title');
+    noteController = TextEditingController();
+  }
+
+  void initEdit() {
+    iconController =
+        TextEditingController(text: widget.taskArgument?.task?.category ?? '');
+    titleController =
+        TextEditingController(text: widget.taskArgument?.task?.title ?? '');
+    noteController =
+        TextEditingController(text: widget.taskArgument?.task?.note ?? '');
+    cubit.startTimeController.text = widget.taskArgument?.task?.dateStart ?? '';
+    cubit.endTimeController.text = widget.taskArgument?.task?.dateEnd ?? '';
+    cubit.changeDoneTask(widget.taskArgument?.task?.doneTask ?? false);
   }
 
   @override
@@ -82,18 +109,94 @@ class _TaskPageState extends State<TaskPage> {
                         child: SvgPicture.asset(
                           'assets/icon/ic_back.svg',
                         ),
+                      ),
+                      Spacer(),
+                      Visibility(
+                        visible: widget.taskArgument?.taskType == TaskType.edit,
+                        child: GestureDetector(
+                          onTap: () {
+                            showCupertinoModalPopup<void>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  CupertinoAlertDialog(
+                                title: const Text('Delete tasks'),
+                                content: const Text(
+                                    'Do you want to delete this task?'),
+                                actions: <CupertinoDialogAction>[
+                                  CupertinoDialogAction(
+                                    isDefaultAction: true,
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('No',
+                                        style: TextStyle(color: Colors.black)),
+                                  ),
+                                  CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    onPressed: () {
+                                      AppNavigator.pop();
+                                      cubit.deleteTask(
+                                        taskID: widget.taskArgument?.task?.id,
+                                        context: context,
+                                      );
+                                    },
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          child: Icon(
+                            Icons.delete_forever,
+                            color: Colors.white,
+                            size: 30.r,
+                          ),
+                        ),
                       )
                     ],
                   ),
                   SizedBox(height: 30.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w),
-                    child: Text(
-                      'Type your Title',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 23.r,
-                        fontWeight: FontWeight.w500,
+                  GestureDetector(
+                    onTap: () {
+                      DialogBuilder(context).showDialogTitleTask(
+                        context: context,
+                        controller: titleController,
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5.w),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ValueListenableBuilder(
+                              valueListenable: titleController,
+                              builder:
+                                  (BuildContext context, value, Widget? child) {
+                                return Text(
+                                  titleController.text,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 23.r,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                '',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16.r,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                textAlign: TextAlign.end,
+                              ),
+                            ],
+                          )
+                        ],
                       ),
                     ),
                   ),
@@ -119,6 +222,37 @@ class _TaskPageState extends State<TaskPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Visibility(
+                    visible: widget.taskArgument?.taskType == TaskType.edit,
+                    child: SizedBox(height: 20.h),
+                  ),
+                  Visibility(
+                    visible: widget.taskArgument?.taskType == TaskType.edit,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Complete task: ',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.r,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        BlocBuilder<TaskCubit, TaskState>(
+                          builder: (context, state) {
+                            return CupertinoSwitch(
+                              value: state.doneTask,
+                              activeColor: CupertinoColors.activeBlue,
+                              onChanged: (bool? value) {
+                                cubit.changeDoneTask(value ?? false);
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(height: 20.h),
                   Row(
                     children: [
@@ -167,12 +301,11 @@ class _TaskPageState extends State<TaskPage> {
                             SizedBox(height: 5.h),
                             CupertinoButton(
                               onPressed: () async {
-                                cubit.onPressStartTime(context);
+                                cubit.onPressEndTime(context);
                               },
                               padding: EdgeInsets.zero,
                               child: AppLabelTextField(
-                                textEditingController:
-                                    cubit.startTimeController,
+                                textEditingController: cubit.endTimeController,
                                 background: Color(0xffFAFAFA),
                                 hintText: "Enter your end time",
                                 enabled: false,
@@ -195,6 +328,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   SizedBox(height: 5.h),
                   AppLabelTextField(
+                    textEditingController: noteController,
                     background: Color(0xffFAFAFA),
                     maxLines: 5,
                   ),
@@ -209,10 +343,12 @@ class _TaskPageState extends State<TaskPage> {
                     textAlign: TextAlign.end,
                   ),
                   SizedBox(height: 5.h),
-                  BlocBuilder<HomeCubit, HomeState>(
-                      builder: (context, state) {
+                  BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
                     return DropdownMenu(
-                      initialSelection: state.categories.first,
+                      initialSelection: state.categories
+                          .where((categories) =>
+                              categories.title == iconController.text)
+                          .first,
                       controller: iconController,
                       // requestFocusOnTap is enabled/disabled by platforms when it is null.
                       // On mobile platforms, this is false by default. Setting this to true will
@@ -285,7 +421,24 @@ class _TaskPageState extends State<TaskPage> {
             color: Colors.white,
             child: CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: () {},
+              onPressed: () {
+                if (widget.taskArgument?.taskType == TaskType.edit) {
+                  cubit.onPressCreateTask(
+                    title: titleController,
+                    note: noteController,
+                    category: iconController,
+                    context: context,
+                  );
+                } else {
+                  cubit.updateTask(
+                    title: titleController,
+                    note: noteController,
+                    category: iconController,
+                    context: context,
+                    taskId: widget.taskArgument?.task?.id,
+                  );
+                }
+              },
               child: Container(
                 width: double.infinity,
                 height: 56.h,
@@ -294,7 +447,7 @@ class _TaskPageState extends State<TaskPage> {
                     borderRadius: BorderRadius.circular(15.r)),
                 child: Center(
                   child: Text(
-                    'Create Task',
+                    widget.taskArgument?.taskType == TaskType.edit ?"Update task" :'Create Task',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18.r,
@@ -339,11 +492,10 @@ class _TaskPageState extends State<TaskPage> {
     if (isDenied) return;
     final ImagePicker picker = ImagePicker();
     final XFile? imageFile =
-    await picker.pickImage(source: ImageSource.gallery);
+        await picker.pickImage(source: ImageSource.gallery);
     if (imageFile == null) return;
     File file = File(imageFile.path);
     print('Image uploaded to Firebase Storage: ');
-
   }
 
   Future<void> _pickFile() async {
@@ -355,6 +507,5 @@ class _TaskPageState extends State<TaskPage> {
 
     if (result == null) return;
     File file = File(result.files.single.path!);
-
   }
 }

@@ -9,6 +9,7 @@ import 'package:untitled1/ui/category/category_page.dart';
 import 'package:untitled1/ui/home/home_page.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
 import 'package:untitled1/ui/profile/profile_page.dart';
+import 'package:untitled1/ui/task/task_argument.dart';
 import 'package:untitled1/ui/task/task_cubit.dart';
 import 'package:untitled1/ui/task/task_page.dart';
 
@@ -65,7 +66,7 @@ class AppNavigator {
         );
       case _Paths.task:
         var arguments = settings.arguments;
-        var task = arguments is TaskEntity ? arguments : null;
+        var task = arguments is TaskArgument ? arguments : null;
         return Transitions(
           transitionType: TransitionType.slideLeft,
           page: MultiBlocProvider(
@@ -75,13 +76,13 @@ class AppNavigator {
               )
             ],
             child:  TaskPage(
-              task: task,
+              taskArgument: task,
             ),
           ),
         );
       case _Paths.category:
         var arguments = settings.arguments;
-        var categories = arguments is Categories ? arguments : null;
+        var indexCategories = arguments is int ? arguments : 0;
         return Transitions(
           transitionType: TransitionType.slideLeft,
           page: MultiBlocProvider(
@@ -91,7 +92,7 @@ class AppNavigator {
               )
             ],
             child: CategoryPage(
-              categories: categories,
+              indexCategories: indexCategories,
             ),
           ),
         );

@@ -1,22 +1,88 @@
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:toastification/toastification.dart';
+import 'package:untitled1/firebase/firebase_helper.dart';
 import 'package:untitled1/models/model/task.dart';
+import 'package:untitled1/navigator/routes.dart';
+import 'package:untitled1/ui/home/home_cubit.dart';
 
 part 'task_state.dart';
 
 class TaskCubit extends Cubit<TaskState> {
   TextEditingController startTimeController = TextEditingController();
+  TextEditingController endTimeController = TextEditingController();
+
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   TaskCubit() : super(const TaskState());
 
   void onPressStartTime(BuildContext context) async {
     TaskEntity taskEntity = state.taskEntity ?? TaskEntity();
-    DateTime? startTime = await showOmniDateTimePicker(
+    DateTime? startTime = await showPickerDate(context);
+    taskEntity.dateStart = formatDateTime(startTime ?? DateTime.now());
+    startTimeController.text = formatDateTime(startTime ?? DateTime.now());
+    emit(state.copyWith(taskEntity: taskEntity));
+  }
+
+  void onPressEndTime(BuildContext context) async {
+    TaskEntity taskEntity = state.taskEntity ?? TaskEntity();
+    DateTime? endTime = await showPickerDate(context);
+    taskEntity.dateEnd = formatDateTime(endTime ?? DateTime.now());
+    endTimeController.text = formatDateTime(endTime ?? DateTime.now());
+    emit(state.copyWith(taskEntity: taskEntity));
+  }
+
+  void onPressCreateTask({
+    required TextEditingController title,
+    required TextEditingController note,
+    required TextEditingController category,
+    required BuildContext context,
+  }) async {
+    try {
+      TaskEntity taskEntity = state.taskEntity ?? TaskEntity();
+      taskEntity.doneTask = false;
+      taskEntity.title = title.text;
+      taskEntity.note = note.text;
+      taskEntity.category = category.text;
+      final User? user = auth.currentUser;
+      final uid = user?.uid;
+      await FireBaseHelper().addTask(
+        uid: uid ?? '',
+        task: taskEntity,
+      );
+      await context.read<HomeCubit>().getAllTask();
+      AppNavigator.push(Routes.home);
+      toastification.show(
+        context: context,
+        // optional if you use ToastificationWrapper
+        title: const Text('Create Task Success'),
+        style: ToastificationStyle.fillColored,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+    } catch (e) {
+      toastification.show(
+        context: context,
+        // optional if you use ToastificationWrapper
+        title: const Text('An Erorr'),
+        style: ToastificationStyle.minimal,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+    }
+  }
+
+  String formatDateTime(DateTime dateTime) {
+    final formatter = DateFormat('yyyy/MM/dd HH:mm');
+    return formatter.format(dateTime);
+  }
+
+  Future<DateTime?> showPickerDate(BuildContext context) async {
+    return await showOmniDateTimePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(1600).subtract(const Duration(days: 3652)),
@@ -54,13 +120,69 @@ class TaskCubit extends Cubit<TaskState> {
         }
       },
     );
-    taskEntity.dateStart = formatDateTime(startTime ?? DateTime.now());
-    startTimeController.text = formatDateTime(startTime ?? DateTime.now());
-    emit(state.copyWith(taskEntity: taskEntity));
   }
 
-  String formatDateTime(DateTime dateTime) {
-    final formatter = DateFormat('yyyy/MM/dd HH:mm');
-    return formatter.format(dateTime);
+  void deleteTask({
+    required String taskID,
+    required BuildContext context,
+  }) async {
+    try {
+      final User? user = auth.currentUser;
+      final uid = user?.uid;
+      await FireBaseHelper().deleteTask(
+        uid: uid ?? '',
+        idTask: taskID,
+      );
+      AppNavigator.pop();
+      await context.read<HomeCubit>().getAllTask();
+      toastification.show(
+        context: context,
+        // optional if you use ToastificationWrapper
+        title: const Text('Delete Task Success'),
+        style: ToastificationStyle.fillColored,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+    } catch (e) {}
+  }
+
+  void changeDoneTask(bool done) {
+    emit(state.copyWith(doneTask: done));
+  }
+
+  void updateTask({
+    required dynamic taskId,
+    required TextEditingController title,
+    required TextEditingController note,
+    required TextEditingController category,
+    required BuildContext context,
+  }) async {
+    try {
+      TaskEntity taskEntity = state.taskEntity ?? TaskEntity();
+      taskEntity.doneTask = false;
+      taskEntity.title = title.text;
+      taskEntity.note = note.text;
+      taskEntity.category = category.text;
+      taskEntity.dateStart = startTimeController.text;
+      taskEntity.dateEnd = endTimeController.text;
+      taskEntity.doneTask = state.doneTask;
+      taskEntity.id = taskId;
+      final User? user = auth.currentUser;
+      final uid = user?.uid;
+      await FireBaseHelper().updateTask(
+        uid: uid ?? '',
+        task: taskEntity.toDbMap(),
+        idTask: taskEntity.id,
+      );
+      await context.read<HomeCubit>().getAllTask();
+      AppNavigator.pop();
+      toastification.show(
+        context: context,
+        // optional if you use ToastificationWrapper
+        title: const Text('Update Task Success'),
+        style: ToastificationStyle.fillColored,
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+    } catch (e) {
+    }
   }
 }

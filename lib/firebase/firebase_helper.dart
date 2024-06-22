@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:untitled1/models/model/categories.dart';
+import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/models/model/user_local.dart';
 
 class FireBaseHelper {
@@ -90,15 +91,80 @@ class FireBaseHelper {
     required String uid,
   }) async {
     try {
-      final docRef = db
+      final docRef =
+          db.collection('database').doc(uid).collection('categories').doc();
+      categories.id = docRef.id;
+      categories.createAt = DateTime.now().toIso8601String();
+      await docRef.set(categories.toDbMap());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future<void> addTask({
+    required TaskEntity task,
+    required String uid,
+  }) async {
+    try {
+      final docRef = db.collection('database').doc(uid).collection('tasks').doc();
+      task.id = docRef.id;
+      await docRef.set(task.toDbMap());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future<List<TaskEntity>> getAllTasks({required String uid}) async {
+    try {
+      QuerySnapshot querySnapshot =
+          await db.collection('database').doc(uid).collection('tasks').get();
+
+      List<TaskEntity> listTaskEntity = querySnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return TaskEntity.fromDbMap(data);
+      }).toList();
+
+      return listTaskEntity;
+    } catch (e) {
+      print("Error getting categories: $e");
+      return []; // Trả về danh sách rỗng nếu có lỗi
+    }
+  }
+
+  Future<void> deleteTask({
+    required String uid,
+    required String idTask,
+  }) async {
+    try {
+      await db
           .collection('database')
           .doc(uid)
-          .collection('categories');
+          .collection('tasks')
+          .doc(idTask)
+          .delete();
+      debugPrint("hungtk}");
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
 
-      categories.id = docRef.doc().id;
-      categories.createAt = DateTime.now().toIso8601String();
-      await
-      docRef.add(categories.toDbMap());
+  Future<void> updateTask({
+    required String uid,
+    required String idTask,
+    required Map<String, dynamic> task,
+  }) async {
+    try {
+      await db
+          .collection('database')
+          .doc(uid)
+          .collection('tasks')
+          .doc(idTask).update(task);
     } catch (e) {
       if (kDebugMode) {
         print(e);

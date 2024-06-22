@@ -5,8 +5,9 @@ class TaskEntity {
   String? dateStart;
   String? dateEnd;
   String? note;
-  List<String>? category;
+  String? category;
   List<String>? documents;
+  bool? doneTask;
 
   TaskEntity({
     this.id,
@@ -17,6 +18,7 @@ class TaskEntity {
     this.category,
     this.documents,
     this.note,
+    this.doneTask,
   });
 
   TaskEntity.fromDbMap(dynamic obj) {
@@ -28,6 +30,7 @@ class TaskEntity {
     category = obj?['category'];
     documents = obj?['documents'];
     note = obj?['note'];
+    doneTask = obj?['doneTask'];
   }
 
   Map<String, dynamic> toDbMap() {
@@ -40,6 +43,7 @@ class TaskEntity {
       'category': category,
       'documents': documents,
       'note': note,
+      'doneTask': doneTask,
     };
   }
 }

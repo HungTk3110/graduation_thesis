@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toastification/toastification.dart';
 import 'package:untitled1/firebase/firebase_helper.dart';
 import 'package:untitled1/models/model/categories.dart';
+import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/models/model/user_local.dart';
 import 'package:untitled1/navigator/routes.dart';
 
@@ -18,29 +19,22 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> initData(BuildContext context) async {
     final User? user = auth.currentUser;
     final uid = user?.uid;
-    UserLocal userLocal =
-        await FireBaseHelper().getCurrentUser() ?? UserLocal(userName: '');
-    List<Categories> categories =
-        await FireBaseHelper().getAllCategories(uid: uid ?? '');
-    emit(state.copyWith(
-      userLocal: userLocal,
-      categories: categories,
-    ));
+    UserLocal userLocal = await FireBaseHelper().getCurrentUser() ??
+        UserLocal(userName: '');
+    List<Categories> categories = await FireBaseHelper().getAllCategories(
+        uid: uid ?? '');
+    emit(state.copyWith(userLocal: userLocal, categories: categories,));
+    getAllTask();
     debugPrint('hungtl${categories.length}');
   }
 
-  void onPressAddCategory(
-    Categories categories,
-    BuildContext context,
-  ) async {
+  void onPressAddCategory(Categories categories, BuildContext context,) async {
     final User? user = auth.currentUser;
     final uid = user?.uid;
     await FireBaseHelper().addCategories(
-      uid: uid ?? '',
-      categories: categories,
-    );
-    List<Categories> categoriesNew =
-    await FireBaseHelper().getAllCategories(uid: uid ?? '');
+      uid: uid ?? '', categories: categories,);
+    List<Categories> categoriesNew = await FireBaseHelper().getAllCategories(
+        uid: uid ?? '');
     emit(state.copyWith(categories: categoriesNew));
     AppNavigator.pop();
     toastification.show(
@@ -48,7 +42,20 @@ class HomeCubit extends Cubit<HomeState> {
       // optional if you use ToastificationWrapper
       title: const Text('Create Category Success'),
       style: ToastificationStyle.fillColored,
-      autoCloseDuration: const Duration(seconds: 5),
-    );
+      autoCloseDuration: const Duration(seconds: 5),);
+  }
+
+  Future<void> getAllTask() async {
+    final User? user = auth.currentUser;
+    final uid = user?.uid;
+    List<TaskEntity> tasks = await FireBaseHelper().getAllTasks(uid: uid ?? '');
+    List<Categories> categories = state.categories;
+    List<List<TaskEntity>> taskByCategory = [];
+    emit(state.copyWith(tasks: tasks));
+    for (int i = 0; i < categories.length; i++){
+      List<TaskEntity> tasksFilter = tasks.where((task) => task.category == categories[i].title).toList();
+      taskByCategory.add(tasksFilter);
+    }
+    emit(state.copyWith(taskByCategory: taskByCategory));
   }
 }

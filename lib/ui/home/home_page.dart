@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/models/model/categories.dart';
 import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/home/components/nav_drawer.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
+import 'package:untitled1/ui/task/task_argument.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -224,7 +226,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       scrollDirection: Axis.horizontal,
                       itemCount: state.categories.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return itemCategory(state.categories[index]);
+                        return itemCategory(state.categories[index],index);
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return SizedBox(width: 15.w);
@@ -284,6 +286,104 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(
+                  height: 400.h,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: [
+                      BlocBuilder<HomeCubit, HomeState>(
+                        builder: (context, state) {
+                          return ListView.separated(
+                            itemCount: state.tasks.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  AppNavigator.push(
+                                    Routes.task,
+                                    TaskArgument(
+                                      task: state.tasks[index],
+                                      taskType: TaskType.edit,
+                                    ),
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 15.h),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                state.tasks[index].title ?? '',
+                                                style: TextStyle(
+                                                  color: const Color(0xff303030),
+                                                  fontSize: 15.r,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              Text(
+                                                state.tasks[index].category ?? '',
+                                                style: TextStyle(
+                                                  color: const Color(0xff303030)
+                                                      .withOpacity(0.5),
+                                                  fontSize: 13.r,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.navigate_next,
+                                          size: 30.r,
+                                        ),
+                                        SizedBox(width: 16.w),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Padding(
+                                padding:  EdgeInsets.only(right: 16.w),
+                                child: SizedBox(height: 10.h),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      BlocBuilder<HomeCubit, HomeState>(
+                        builder: (context, state) {
+                          return RichText(
+                            text: TextSpan(
+                              text: 'Hello, ',
+                              style: TextStyle(
+                                  fontSize: 15.r,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: state.userLocal?.userName ?? '',
+                                  style: TextStyle(
+                                    fontSize: 15.r,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xffF26950),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
@@ -295,13 +395,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget itemCategory(
     Categories category,
+      int index,
   ) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
       onPressed: () {
         AppNavigator.push(
           Routes.category,
-          category,
+          index,
         );
       },
       child: Container(
