@@ -422,7 +422,7 @@ class _TaskPageState extends State<TaskPage> {
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               onPressed: () {
-                if (widget.taskArgument?.taskType == TaskType.edit) {
+                if (widget.taskArgument?.taskType == TaskType.create) {
                   cubit.onPressCreateTask(
                     title: titleController,
                     note: noteController,

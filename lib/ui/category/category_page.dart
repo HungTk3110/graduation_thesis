@@ -83,7 +83,19 @@ class _CategoryPageState extends State<CategoryPage> {
                             child: SvgPicture.asset(
                               'assets/icon/ic_back.svg',
                             ),
-                          )
+                          ),
+                          const Spacer(),
+                          Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20.r,
+                          ),
+                          SizedBox(width: 16.w),
+                          Icon(
+                            Icons.delete_forever,
+                            color: Colors.white,
+                            size: 20.r,
+                          ),
                         ],
                       ),
                       SizedBox(height: 30.h),

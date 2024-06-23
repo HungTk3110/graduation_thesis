@@ -3,35 +3,40 @@ part of 'home_cubit.dart';
 class HomeState extends Equatable {
   final UserLocal? userLocal;
   final List<Categories> categories;
-  final List<TaskEntity> tasks;
+  final List<TaskEntity> tasksProgress;
+  final List<TaskEntity> tasksComplete;
   final List<List<TaskEntity>> taskByCategory;
 
   const HomeState({
     this.userLocal,
     this.categories = const [],
-    this.tasks = const [],
+    this.tasksProgress = const [],
     this.taskByCategory = const [],
+    this.tasksComplete = const [],
   });
 
   @override
   List<Object?> get props => [
         userLocal,
         categories,
-        tasks,
+        tasksProgress,
         taskByCategory,
+        tasksComplete,
       ];
 
   HomeState copyWith({
     UserLocal? userLocal,
     List<Categories>? categories,
-    List<TaskEntity>? tasks,
+    List<TaskEntity>? tasksProgress,
     List<List<TaskEntity>>? taskByCategory,
+    List<TaskEntity>? tasksComplete,
   }) {
     return HomeState(
       userLocal: userLocal ?? this.userLocal,
       categories: categories ?? this.categories,
-      tasks: tasks ?? this.tasks,
+      tasksProgress: tasksProgress ?? this.tasksProgress,
       taskByCategory: taskByCategory ?? this.taskByCategory,
+      tasksComplete: tasksComplete ?? this.tasksComplete,
     );
   }
 }

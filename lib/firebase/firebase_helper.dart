@@ -108,7 +108,8 @@ class FireBaseHelper {
     required String uid,
   }) async {
     try {
-      final docRef = db.collection('database').doc(uid).collection('tasks').doc();
+      final docRef =
+          db.collection('database').doc(uid).collection('tasks').doc();
       task.id = docRef.id;
       await docRef.set(task.toDbMap());
     } catch (e) {
@@ -164,7 +165,8 @@ class FireBaseHelper {
           .collection('database')
           .doc(uid)
           .collection('tasks')
-          .doc(idTask).update(task);
+          .doc(idTask)
+          .update(task);
     } catch (e) {
       if (kDebugMode) {
         print(e);

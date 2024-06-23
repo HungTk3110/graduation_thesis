@@ -295,14 +295,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       BlocBuilder<HomeCubit, HomeState>(
                         builder: (context, state) {
                           return ListView.separated(
-                            itemCount: state.tasks.length,
+                            itemCount: state.tasksProgress.length,
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
                                 onTap: () {
                                   AppNavigator.push(
                                     Routes.task,
                                     TaskArgument(
-                                      task: state.tasks[index],
+                                      task: state.tasksProgress[index],
                                       taskType: TaskType.edit,
                                     ),
                                   );
@@ -319,7 +319,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
-                                                state.tasks[index].title ?? '',
+                                                state.tasksProgress[index].title ?? '',
                                                 style: TextStyle(
                                                   color: const Color(0xff303030),
                                                   fontSize: 15.r,
@@ -327,7 +327,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                 ),
                                               ),
                                               Text(
-                                                state.tasks[index].category ?? '',
+                                                state.tasksProgress[index].category ?? '',
                                                 style: TextStyle(
                                                   color: const Color(0xff303030)
                                                       .withOpacity(0.5),
@@ -361,24 +361,68 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       BlocBuilder<HomeCubit, HomeState>(
                         builder: (context, state) {
-                          return RichText(
-                            text: TextSpan(
-                              text: 'Hello, ',
-                              style: TextStyle(
-                                  fontSize: 15.r,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: state.userLocal?.userName ?? '',
-                                  style: TextStyle(
-                                    fontSize: 15.r,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xffF26950),
-                                  ),
+                          return ListView.separated(
+                            itemCount: state.tasksComplete.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  AppNavigator.push(
+                                    Routes.task,
+                                    TaskArgument(
+                                      task: state.tasksComplete[index],
+                                      taskType: TaskType.edit,
+                                    ),
+                                  );
+                                },
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 15.h),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                state.tasksComplete[index].title ?? '',
+                                                style: TextStyle(
+                                                  color: const Color(0xff303030),
+                                                  fontSize: 15.r,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              Text(
+                                                state.tasksComplete[index].category ?? '',
+                                                style: TextStyle(
+                                                  color: const Color(0xff303030)
+                                                      .withOpacity(0.5),
+                                                  fontSize: 13.r,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.navigate_next,
+                                          size: 30.r,
+                                        ),
+                                        SizedBox(width: 16.w),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              );
+                            },
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return Padding(
+                                padding:  EdgeInsets.only(right: 16.w),
+                                child: SizedBox(height: 10.h),
+                              );
+                            },
                           );
                         },
                       ),
