@@ -10,10 +10,14 @@ class AddCategoryWidget extends StatefulWidget {
     String categoryName,
     Color color,
   ) onPressAdd;
+  final String? textTitle;
+  final Color? colorSelected;
 
   const AddCategoryWidget({
     super.key,
     required this.onPressAdd,
+    this.textTitle,
+    this.colorSelected,
   });
 
   @override
@@ -21,10 +25,16 @@ class AddCategoryWidget extends StatefulWidget {
 }
 
 class _AddCategoryWidgetState extends State<AddCategoryWidget> {
-  TextEditingController controller = TextEditingController();
-  Color colorSelected = AppContains.colorTheme.first;
+  late TextEditingController controller ;
+  late Color colorSelected ;
   bool canNextStep = false;
 
+  @override
+  void initState() {
+    controller = TextEditingController(text: widget.textTitle ?? '');
+    colorSelected = widget.colorSelected ??  AppContains.colorTheme.first;
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -41,7 +51,7 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
         ),
         SizedBox(height: 30.h),
         Text(
-          'Theme',
+          'Category name',
           style: TextStyle(
             color: const Color(0xff303030),
             fontSize: 15.r,
@@ -53,12 +63,12 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
           textEditingController: controller,
           hintText: 'Enter your Category name',
           background: Colors.grey.shade100,
-          onChanged: (value){
-            if(value.isNotEmpty){
+          onChanged: (value) {
+            if (value.isNotEmpty) {
               setState(() {
                 canNextStep = true;
               });
-            }else{
+            } else {
               canNextStep = false;
             }
           },
@@ -126,12 +136,14 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
             ),
             CupertinoButton(
               padding: EdgeInsets.zero,
-              onPressed: canNextStep ? () {
-                widget.onPressAdd(
-                  controller.text,
-                  colorSelected,
-                );
-              } : null,
+              onPressed: canNextStep
+                  ? () {
+                      widget.onPressAdd(
+                        controller.text,
+                        colorSelected,
+                      );
+                    }
+                  : null,
               child: Container(
                 width: 40.r,
                 height: 40.r,

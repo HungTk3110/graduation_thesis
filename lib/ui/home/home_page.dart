@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/models/model/categories.dart';
+import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
@@ -226,7 +227,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       scrollDirection: Axis.horizontal,
                       itemCount: state.categories.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return itemCategory(state.categories[index],index);
+                        return itemCategory(state.categories[index], index);
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return SizedBox(width: 15.w);
@@ -273,16 +274,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ],
                     ),
                     Spacer(),
-                    Container(
-                      width: 40.r,
-                      height: 40.r,
-                      margin: EdgeInsets.only(right: 25.w),
-                      decoration: BoxDecoration(
-                          color: Color(0xffF26950),
-                          borderRadius: BorderRadius.circular(10.r)),
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                        AppNavigator.push(
+                          Routes.task,
+                          TaskArgument(
+                            taskType: TaskType.create,
+                            task: TaskEntity(
+                              category: cubit.state
+                                  .categories.first.title,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 40.r,
+                        height: 40.r,
+                        margin: EdgeInsets.only(right: 25.w),
+                        decoration: BoxDecoration(
+                            color: Color(0xffF26950),
+                            borderRadius: BorderRadius.circular(10.r)),
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
@@ -319,15 +334,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
-                                                state.tasksProgress[index].title ?? '',
+                                                state.tasksProgress[index]
+                                                        .title ??
+                                                    '',
                                                 style: TextStyle(
-                                                  color: const Color(0xff303030),
+                                                  color:
+                                                      const Color(0xff303030),
                                                   fontSize: 15.r,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                               Text(
-                                                state.tasksProgress[index].category ?? '',
+                                                state.tasksProgress[index]
+                                                        .category ??
+                                                    '',
                                                 style: TextStyle(
                                                   color: const Color(0xff303030)
                                                       .withOpacity(0.5),
@@ -352,7 +372,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               return Padding(
-                                padding:  EdgeInsets.only(right: 16.w),
+                                padding: EdgeInsets.only(right: 16.w),
                                 child: SizedBox(height: 10.h),
                               );
                             },
@@ -382,19 +402,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               Text(
-                                                state.tasksComplete[index].title ?? '',
+                                                state.tasksComplete[index]
+                                                        .title ??
+                                                    '',
                                                 style: TextStyle(
-                                                  color: const Color(0xff303030),
+                                                  color:
+                                                      const Color(0xff303030),
                                                   fontSize: 15.r,
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                               Text(
-                                                state.tasksComplete[index].category ?? '',
+                                                state.tasksComplete[index]
+                                                        .category ??
+                                                    '',
                                                 style: TextStyle(
                                                   color: const Color(0xff303030)
                                                       .withOpacity(0.5),
@@ -419,7 +444,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             separatorBuilder:
                                 (BuildContext context, int index) {
                               return Padding(
-                                padding:  EdgeInsets.only(right: 16.w),
+                                padding: EdgeInsets.only(right: 16.w),
                                 child: SizedBox(height: 10.h),
                               );
                             },
@@ -439,7 +464,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget itemCategory(
     Categories category,
-      int index,
+    int index,
   ) {
     return CupertinoButton(
       padding: EdgeInsets.zero,

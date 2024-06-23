@@ -13,13 +13,13 @@ import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
 
-part 'category_state.dart';
+part 'search_state.dart';
 
-class CategoryCubit extends Cubit<CategoryState> {
+class SearchCubit extends Cubit<SearchState> {
   TextEditingController userNameController = TextEditingController();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  CategoryCubit() : super(const CategoryState());
+  SearchCubit() : super(const SearchState());
 
   void initData(BuildContext context) async {
     UserLocal userLocal =

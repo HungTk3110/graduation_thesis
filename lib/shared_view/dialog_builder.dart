@@ -24,6 +24,8 @@ class DialogBuilder {
 
   void showDialogAddCategory({
     required BuildContext context,
+    String? textTitle,
+    Color? colorSelected,
     required Function(
       String categoryName,
       Color color,
@@ -39,6 +41,8 @@ class DialogBuilder {
                 color: Colors.white, borderRadius: BorderRadius.circular(16.r)),
             child: AddCategoryWidget(
               onPressAdd: onPressAdd,
+              textTitle: textTitle,
+              colorSelected: colorSelected,
             ),
           ),
         );

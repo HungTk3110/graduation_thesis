@@ -11,19 +11,19 @@ import 'package:untitled1/ui/category/category_cubit.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
 import 'package:untitled1/ui/task/task_argument.dart';
 
-class CategoryPage extends StatefulWidget {
+class SearchPage extends StatefulWidget {
   final int indexCategories;
 
-  const CategoryPage({
+  const SearchPage({
     super.key,
     required this.indexCategories,
   });
 
   @override
-  State<CategoryPage> createState() => _CategoryPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
-class _CategoryPageState extends State<CategoryPage> {
+class _SearchPageState extends State<SearchPage> {
   late CategoryCubit cubit;
 
   @override

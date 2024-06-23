@@ -80,4 +80,14 @@ class HomeCubit extends Cubit<HomeState> {
     }
     emit(state.copyWith(taskByCategory: taskByCategory));
   }
+
+  Future<void> getAllCategory(BuildContext context) async {
+    final User? user = auth.currentUser;
+    final uid = user?.uid;
+    List<Categories> categories =
+        await FireBaseHelper().getAllCategories(uid: uid ?? '');
+    emit(state.copyWith(
+      categories: categories,
+    ));
+  }
 }

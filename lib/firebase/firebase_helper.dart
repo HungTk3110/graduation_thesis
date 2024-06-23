@@ -103,6 +103,44 @@ class FireBaseHelper {
     }
   }
 
+  Future<void> deleteCategory({
+    required String uid,
+    required String idCategory,
+  }) async {
+    try {
+      await db
+          .collection('database')
+          .doc(uid)
+          .collection('categories')
+          .doc(idCategory)
+          .delete();
+      debugPrint("hungtk}");
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
+  Future<void> updateCategory({
+    required String uid,
+    required String idTask,
+    required Map<String, dynamic> category,
+  }) async {
+    try {
+      await db
+          .collection('database')
+          .doc(uid)
+          .collection('categories')
+          .doc(idTask)
+          .update(category);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Future<void> addTask({
     required TaskEntity task,
     required String uid,
