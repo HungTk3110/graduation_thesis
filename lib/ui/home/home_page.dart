@@ -122,20 +122,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       SizedBox(width: 15.h),
                       Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 25.w),
-                          child: AppLabelTextField(
-                            hintText: 'Search Your Task',
-                            hintStyle: TextStyle(
-                              color: Color(0xff303030).withOpacity(0.4),
-                              fontSize: 13.r,
-                              fontWeight: FontWeight.w400,
-                            ),
-                            background: Color(0xfff5f5f5),
-                            prefixIcon: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 18.w),
-                              child:
-                                  SvgPicture.asset('assets/icon/ic_search.svg'),
+                        child: GestureDetector(
+                          onTap: (){
+                            AppNavigator.push(Routes.search);
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 25.w),
+                            child: AppLabelTextField(
+                              hintText: 'Search Your Task',
+                              enabled: false,
+                              hintStyle: TextStyle(
+                                color: Color(0xff303030).withOpacity(0.4),
+                                fontSize: 13.r,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              background: Color(0xfff5f5f5),
+                              prefixIcon: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 18.w),
+                                child:
+                                    SvgPicture.asset('assets/icon/ic_search.svg'),
+                              ),
                             ),
                           ),
                         ),

@@ -10,6 +10,7 @@ import 'package:untitled1/firebase_options.dart';
 import 'package:untitled1/ui/category/category_cubit.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
+import 'package:untitled1/ui/search/search_cubit.dart';
 import 'package:untitled1/ui/user_authentication/user_authentication_cubit.dart';
 
 void main() async{
@@ -28,6 +29,7 @@ void main() async{
         BlocProvider(create: (_) => HomeCubit()),
         BlocProvider(create: (_) => ProfileCubit()),
         BlocProvider(create: (_) => CategoryCubit()),
+        BlocProvider(create: (_) => SearchCubit()),
       ],
       child: const MyApp(),
     ),

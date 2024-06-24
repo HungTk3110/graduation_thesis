@@ -9,15 +9,21 @@ import 'package:untitled1/ui/category/category_page.dart';
 import 'package:untitled1/ui/home/home_page.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
 import 'package:untitled1/ui/profile/profile_page.dart';
+import 'package:untitled1/ui/search/search_cubit.dart';
+import 'package:untitled1/ui/search/search_page.dart';
 import 'package:untitled1/ui/task/task_argument.dart';
 import 'package:untitled1/ui/task/task_cubit.dart';
 import 'package:untitled1/ui/task/task_page.dart';
+import 'package:untitled1/ui/user_authentication/user_authentication_cubit.dart';
+import 'package:untitled1/ui/user_authentication/user_authentication_page.dart';
 
 enum Routes {
   home,
   profile,
   category,
   task,
+  search,
+  authen,
 }
 
 class _Paths {
@@ -25,12 +31,16 @@ class _Paths {
   static const String profile = "/profile";
   static const String category = "/category";
   static const String task = "/task";
+  static const String search = "/search";
+  static const String authen = "/authen";
 
   static const Map<Routes, String> _pathMap = {
     Routes.home: _Paths.home,
     Routes.profile: _Paths.profile,
     Routes.category: _Paths.category,
     Routes.task: _Paths.task,
+    Routes.search: _Paths.search,
+    Routes.authen: _Paths.authen,
   };
 
   static String of(Routes route) => _pathMap[route] ?? home;
@@ -94,6 +104,30 @@ class AppNavigator {
             child: CategoryPage(
               indexCategories: indexCategories,
             ),
+          ),
+        );
+      case _Paths.search:
+        return Transitions(
+          transitionType: TransitionType.slideLeft,
+          page: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => SearchCubit(),
+              )
+            ],
+            child: const SearchPage(),
+          ),
+        );
+      case _Paths.authen:
+        return Transitions(
+          transitionType: TransitionType.slideLeft,
+          page: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) =>  UserAuthenticationCubit(),
+              )
+            ],
+            child: const UserAuthenticationPage(),
           ),
         );
       default:

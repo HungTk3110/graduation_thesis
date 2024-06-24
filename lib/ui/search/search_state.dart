@@ -1,32 +1,27 @@
 part of 'search_cubit.dart';
 
 class SearchState extends Equatable {
-  final UserLocal? userLocal;
-  final File? fileAvatar;
-  final String? filePath;
+  final LoadStatus loadStatus;
+  final List<TaskEntity> tasks;
 
   const SearchState({
-    this.userLocal,
-    this.fileAvatar,
-    this.filePath,
+    this.loadStatus = LoadStatus.init,
+    this.tasks = const [],
   });
 
   @override
   List<Object?> get props => [
-        userLocal,
-    fileAvatar,
-        filePath,
+        loadStatus,
+        tasks,
       ];
 
   SearchState copyWith({
-    final UserLocal? userLocal,
-    final File? fileAvatar,
-    final String? filePath,
+    final LoadStatus? loadStatus,
+    final List<TaskEntity>? tasks,
   }) {
     return SearchState(
-      userLocal: userLocal ?? this.userLocal,
-      fileAvatar: fileAvatar ?? this.fileAvatar,
-      filePath: filePath ?? this.filePath,
+      loadStatus: loadStatus ?? this.loadStatus,
+      tasks: tasks ?? this.tasks,
     );
   }
 }

@@ -211,4 +211,38 @@ class FireBaseHelper {
       }
     }
   }
+
+  Future<List<TaskEntity>> searchTaskByTitle({
+    required String title,
+    required String uid,
+  }) async {
+    List<TaskEntity> listTask = [];
+    try {
+      await db
+          .collection('database')
+          .doc(uid)
+          .collection('tasks')
+          .where('title', isGreaterThanOrEqualTo: title)
+          .where('title', isLessThan: '${title}z')
+          .get()
+          .then(
+        (QuerySnapshot querySnapshot) {
+          for (int i = 0; i < querySnapshot.docs.length; i++) {
+            listTask.add(
+              TaskEntity.fromDbMap(
+                querySnapshot.docs[i].data(),
+              ),
+            );
+          }
+        },
+      );
+      // for (int i = 0; i < data.length; i++) {
+      //   final note = NoteEntity.fromDbMap(data[i]);
+      //   listNote.add(note);
+      // }
+      return listTask;
+    } catch (e) {
+      return [];
+    }
+  }
 }
