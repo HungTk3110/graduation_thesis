@@ -7,6 +7,7 @@ import 'package:untitled1/navigator/transitions.dart';
 import 'package:untitled1/ui/category/category_cubit.dart';
 import 'package:untitled1/ui/category/category_page.dart';
 import 'package:untitled1/ui/home/home_page.dart';
+import 'package:untitled1/ui/language/language_page.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
 import 'package:untitled1/ui/profile/profile_page.dart';
 import 'package:untitled1/ui/search/search_cubit.dart';
@@ -24,6 +25,7 @@ enum Routes {
   task,
   search,
   authen,
+  language,
 }
 
 class _Paths {
@@ -33,6 +35,7 @@ class _Paths {
   static const String task = "/task";
   static const String search = "/search";
   static const String authen = "/authen";
+  static const String language = "/language";
 
   static const Map<Routes, String> _pathMap = {
     Routes.home: _Paths.home,
@@ -41,6 +44,8 @@ class _Paths {
     Routes.task: _Paths.task,
     Routes.search: _Paths.search,
     Routes.authen: _Paths.authen,
+    Routes.language: _Paths.language,
+
   };
 
   static String of(Routes route) => _pathMap[route] ?? home;
@@ -117,6 +122,11 @@ class AppNavigator {
             ],
             child: const SearchPage(),
           ),
+        );
+      case _Paths.language:
+        return Transitions(
+          transitionType: TransitionType.slideLeft,
+          page: const LanguagePage(),
         );
       case _Paths.authen:
         return Transitions(

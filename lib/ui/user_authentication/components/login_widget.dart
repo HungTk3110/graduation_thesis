@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:untitled1/generated/l10n.dart';
+import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/user_authentication/user_authentication_cubit.dart';
 import 'package:untitled1/utils/validator.dart';
@@ -77,7 +78,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 textEditingController: widget.cubit.passWordController,
                 hintText: 'Enter your password',
                 textInputType: TextInputType.visiblePassword,
-                obscureText:isShowPassword,
+                obscureText: isShowPassword,
                 suffixIcon: Padding(
                   padding: EdgeInsets.only(right: 18.w),
                   child: CupertinoButton(
@@ -107,14 +108,21 @@ class _LoginWidgetState extends State<LoginWidget> {
             },
           ),
           SizedBox(height: 32.h),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Text(
-              'Forgot Password?',
-              style: TextStyle(
-                color: Color(0xff303030),
-                fontSize: 15.r,
-                fontWeight: FontWeight.w500,
+          GestureDetector(
+            onTap: () {
+              DialogBuilder(context).showDialogResetPassword(
+                context: context,
+              );
+            },
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: Text(
+                'Forgot Password?',
+                style: TextStyle(
+                  color: Color(0xff303030),
+                  fontSize: 15.r,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),

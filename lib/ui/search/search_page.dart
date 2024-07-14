@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:untitled1/generated/l10n.dart';
 import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
@@ -56,7 +57,7 @@ class _SearchPageState extends State<SearchPage> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
                 child: AppLabelTextField(
-                  hintText: 'Search Your Task',
+                  hintText: S.of(context).searchYourTask,
                   hintStyle: TextStyle(
                     color: Color(0xff303030).withOpacity(0.4),
                     fontSize: 13.r,

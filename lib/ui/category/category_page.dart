@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:untitled1/generated/l10n.dart';
 import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/navigator/routes.dart';
@@ -125,16 +126,16 @@ class _CategoryPageState extends State<CategoryPage> {
                                 context: context,
                                 builder: (BuildContext context) =>
                                     CupertinoAlertDialog(
-                                  title: const Text('Delete tasks'),
-                                  content: const Text(
-                                      'Do you want to delete this task?'),
+                                  title:  Text(S.of(context).deleteTasks),
+                                  content:  Text(
+                                      S.of(context).doYouWantToDeleteThisTask),
                                   actions: <CupertinoDialogAction>[
                                     CupertinoDialogAction(
                                       isDefaultAction: true,
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: const Text('No',
+                                      child:  Text(S.of(context).no,
                                           style:
                                               TextStyle(color: Colors.black)),
                                     ),
@@ -150,7 +151,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                           context: context,
                                         );
                                       },
-                                      child: const Text('Yes'),
+                                      child:  Text(S.of(context).yes),
                                     ),
                                   ],
                                 ),
@@ -199,7 +200,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 ),
                                 SizedBox(height: 10.h),
                                 Text(
-                                  'Task',
+                                  S.of(context).task,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20.r,
@@ -237,7 +238,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Task',
+                          S.of(context).task,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 24.r,

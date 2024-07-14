@@ -44,6 +44,7 @@ class HomeCubit extends Cubit<HomeState> {
     List<Categories> categoriesNew =
         await FireBaseHelper().getAllCategories(uid: uid ?? '');
     emit(state.copyWith(categories: categoriesNew));
+    await getAllTask();
     AppNavigator.pop();
     toastification.show(
       context: context,

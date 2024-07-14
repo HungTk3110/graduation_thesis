@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:untitled1/generated/l10n.dart';
 import 'package:untitled1/models/enum/choose_document_type.dart';
 import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/models/model/categories.dart';
@@ -54,7 +55,7 @@ class _TaskPageState extends State<TaskPage> {
   void initCreate() {
     iconController =
         TextEditingController(text: widget.taskArgument?.task?.category ?? '');
-    titleController = TextEditingController(text: 'Type your Title');
+    titleController = TextEditingController(text: S.of(context).typeYourTitle);
     noteController = TextEditingController();
   }
 
@@ -119,16 +120,16 @@ class _TaskPageState extends State<TaskPage> {
                               context: context,
                               builder: (BuildContext context) =>
                                   CupertinoAlertDialog(
-                                title: const Text('Delete tasks'),
-                                content: const Text(
-                                    'Do you want to delete this task?'),
+                                title:  Text(S.of(context).deleteTasks),
+                                content:  Text(
+                                    S.of(context).doYouWantToDeleteThisTask),
                                 actions: <CupertinoDialogAction>[
                                   CupertinoDialogAction(
                                     isDefaultAction: true,
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child: const Text('No',
+                                    child:  Text(S.of(context).no,
                                         style: TextStyle(color: Colors.black)),
                                   ),
                                   CupertinoDialogAction(
@@ -140,7 +141,7 @@ class _TaskPageState extends State<TaskPage> {
                                         context: context,
                                       );
                                     },
-                                    child: const Text('Yes'),
+                                    child:  Text(S.of(context).yes),
                                   ),
                                 ],
                               ),
@@ -232,7 +233,7 @@ class _TaskPageState extends State<TaskPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Complete task: ',
+                          S.of(context).completeTask,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 16.r,
@@ -260,7 +261,7 @@ class _TaskPageState extends State<TaskPage> {
                         child: Column(
                           children: [
                             Text(
-                              'Start Time',
+                              S.of(context).startTime,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 16.r,
@@ -278,7 +279,7 @@ class _TaskPageState extends State<TaskPage> {
                                 textEditingController:
                                     cubit.startTimeController,
                                 background: Color(0xffFAFAFA),
-                                hintText: "Enter your start time",
+                                hintText: S.of(context).enterYourStartTime,
                                 enabled: false,
                               ),
                             ),
@@ -290,7 +291,7 @@ class _TaskPageState extends State<TaskPage> {
                         child: Column(
                           children: [
                             Text(
-                              'End Time',
+                              S.of(context).endTime,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 16.r,
@@ -307,7 +308,7 @@ class _TaskPageState extends State<TaskPage> {
                               child: AppLabelTextField(
                                 textEditingController: cubit.endTimeController,
                                 background: Color(0xffFAFAFA),
-                                hintText: "Enter your end time",
+                                hintText: S.of(context).enterYourEndTime,
                                 enabled: false,
                               ),
                             ),
@@ -318,7 +319,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   SizedBox(height: 20.h),
                   Text(
-                    'Note',
+                    S.of(context).note,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16.r,
@@ -334,7 +335,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   SizedBox(height: 20.h),
                   Text(
-                    'Category',
+                    S.of(context).category,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16.r,
@@ -379,7 +380,7 @@ class _TaskPageState extends State<TaskPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Document',
+                        S.of(context).document,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16.r,
@@ -447,7 +448,7 @@ class _TaskPageState extends State<TaskPage> {
                     borderRadius: BorderRadius.circular(15.r)),
                 child: Center(
                   child: Text(
-                    widget.taskArgument?.taskType == TaskType.edit ?"Update task" :'Create Task',
+                    widget.taskArgument?.taskType == TaskType.edit ?S.of(context).updateTask :S.of(context).createTask,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18.r,

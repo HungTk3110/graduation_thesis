@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:untitled1/generated/l10n.dart';
 import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/models/model/categories.dart';
 import 'package:untitled1/models/model/task.dart';
@@ -123,13 +124,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       SizedBox(width: 15.h),
                       Expanded(
                         child: GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             AppNavigator.push(Routes.search);
                           },
                           child: Padding(
                             padding: EdgeInsets.only(right: 25.w),
                             child: AppLabelTextField(
-                              hintText: 'Search Your Task',
+                              hintText: S.of(context).searchYourTask,
                               enabled: false,
                               hintStyle: TextStyle(
                                 color: Color(0xff303030).withOpacity(0.4),
@@ -139,8 +140,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               background: Color(0xfff5f5f5),
                               prefixIcon: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 18.w),
-                                child:
-                                    SvgPicture.asset('assets/icon/ic_search.svg'),
+                                child: SvgPicture.asset(
+                                    'assets/icon/ic_search.svg'),
                               ),
                             ),
                           ),
@@ -154,7 +155,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   builder: (context, state) {
                     return RichText(
                       text: TextSpan(
-                        text: 'Hello, ',
+                        text: S.of(context).hello,
                         style: TextStyle(
                             fontSize: 15.r,
                             fontWeight: FontWeight.w500,
@@ -175,7 +176,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 SizedBox(height: 5.h),
                 Text(
-                  'Complete your task today',
+                  S.of(context).completeYourTaskToday,
                   style: TextStyle(
                     color: const Color(0xff303030),
                     fontSize: 20.r,
@@ -187,7 +188,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'My Category',
+                      S.of(context).myCategory,
                       style: TextStyle(
                         color: const Color(0xff303030),
                         fontSize: 15.r,
@@ -233,7 +234,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       scrollDirection: Axis.horizontal,
                       itemCount: state.categories.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return itemCategory(state.categories[index], index);
+                        return itemCategory(state.categories[index], index, state.taskByCategory[index].length);
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return SizedBox(width: 15.w);
@@ -267,14 +268,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           margin: EdgeInsets.only(
                               bottom: 10.h, right: 15.w, top: 10.h),
                           child: Text(
-                            'In Progress',
+                            S.of(context).inProgress,
                           ),
                         ),
                         Container(
                           margin: EdgeInsets.only(
                               bottom: 10.h, right: 15.w, top: 10.h),
                           child: Text(
-                            'Complete',
+                            S.of(context).complete,
                           ),
                         ),
                       ],
@@ -287,8 +288,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           TaskArgument(
                             taskType: TaskType.create,
                             task: TaskEntity(
-                              category: cubit.state
-                                  .categories.first.title,
+                              category: cubit.state.categories.first.title,
                             ),
                           ),
                         );
@@ -471,6 +471,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget itemCategory(
     Categories category,
     int index,
+    int task,
   ) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
@@ -483,6 +484,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Container(
         width: 152.w,
         height: 210.h,
+        padding: EdgeInsets.all(22.r),
         margin: EdgeInsets.only(bottom: 18.h),
         decoration: BoxDecoration(
           color: Color(category.color ?? 0),
@@ -500,7 +502,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               fit: BoxFit.fill),
         ),
         child: Column(
-          children: [Text(category.title ?? '')],
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${task} task',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 15.r,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              category.title ?? '',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15.r,
+                fontWeight: FontWeight.w500,
+              ),
+            )
+          ],
         ),
       ),
     );

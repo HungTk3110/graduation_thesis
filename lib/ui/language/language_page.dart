@@ -17,14 +17,14 @@ import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
 import 'package:untitled1/utils/app_permission_utils.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class LanguagePage extends StatefulWidget {
+  const LanguagePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<LanguagePage> createState() => _LanguagePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _LanguagePageState extends State<LanguagePage> {
   late ProfileCubit cubit;
 
   @override
@@ -48,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           child: Icon(Icons.arrow_back_ios),
         ),
-        title: Text(S.of(context).editProfile),
+        title: Text('Language'),
       ),
       body: _buildBodyWidget(),
     );
@@ -57,69 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildBodyWidget() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25.w),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 32.h),
-            Center(
-              child: BlocBuilder<ProfileCubit, ProfileState>(
-                buildWhen: (prev, current) =>
-                    prev.userLocal != current.userLocal ||
-                    prev.fileAvatar != current.fileAvatar,
-                builder: (BuildContext context, state) {
-                  return _buildAvatar(
-                      networkAvatar: state.userLocal?.avatar ?? '',
-                      localAvatarPath: state.fileAvatar?.path);
-                },
-              ),
-            ),
-            SizedBox(height: 40.h),
-            Text(
-              S.of(context).userName,
-              style: TextStyle(
-                color: const Color(0xff303030),
-                fontSize: 15.r,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            SizedBox(height: 10.h),
-            Padding(
-              padding: EdgeInsets.only(right: 25.w),
-              child: AppLabelTextField(
-                textEditingController: cubit.userNameController,
-                hintText: 'Search Your Task',
-                background: Color(0xfff5f5f5),
-              ),
-            ),
-            SizedBox(height: 200.h),
-            CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                cubit.onPressUpdate(context);
-              },
-              child: Container(
-                width: double.infinity,
-                height: 56.h,
-                decoration: BoxDecoration(
-                    color: Color(0xffF26950),
-                    borderRadius: BorderRadius.circular(15.r)),
-                child: Center(
-                  child: Text(
-                    S.of(context).save,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.r,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+      child: ListView.builder(
+        itemCount: S.of(context).,
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled1/generated/l10n.dart';
 import 'package:untitled1/navigator/routes.dart';
 import 'package:untitled1/shared_view/app_circle_avatar.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
@@ -57,7 +58,7 @@ class NavDrawer extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15.r)),
                   child: Center(
                     child: Text(
-                      'Edit',
+                      S.of(context).edit,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.r,
@@ -70,8 +71,15 @@ class NavDrawer extends StatelessWidget {
               SizedBox(height: 25.h),
               Divider(),
               ListTile(
+                leading: Icon(Icons.language),
+                title: Text("Language"),
+                onTap: () => {
+                  AppNavigator.push(Routes.language)
+                },
+              ),
+              ListTile(
                 leading: Icon(Icons.exit_to_app),
-                title: Text('Logout'),
+                title: Text(S.of(context).logout),
                 onTap: () => {
                   AppNavigator.push(Routes.authen)
                 },

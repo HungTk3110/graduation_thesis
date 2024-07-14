@@ -129,6 +129,276 @@ class S {
       args: [],
     );
   }
+
+  /// `Search Your Task`
+  String get searchYourTask {
+    return Intl.message(
+      'Search Your Task',
+      name: 'searchYourTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hello,`
+  String get hello {
+    return Intl.message(
+      'Hello,',
+      name: 'hello',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete your task today`
+  String get completeYourTaskToday {
+    return Intl.message(
+      'Complete your task today',
+      name: 'completeYourTaskToday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Category`
+  String get myCategory {
+    return Intl.message(
+      'My Category',
+      name: 'myCategory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In Progress`
+  String get inProgress {
+    return Intl.message(
+      'In Progress',
+      name: 'inProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete`
+  String get complete {
+    return Intl.message(
+      'Complete',
+      name: 'complete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete tasks`
+  String get deleteTasks {
+    return Intl.message(
+      'Delete tasks',
+      name: 'deleteTasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to delete this task?`
+  String get doYouWantToDeleteThisTask {
+    return Intl.message(
+      'Do you want to delete this task?',
+      name: 'doYouWantToDeleteThisTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message(
+      'No',
+      name: 'no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get yes {
+    return Intl.message(
+      'Yes',
+      name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Task`
+  String get task {
+    return Intl.message(
+      'Task',
+      name: 'task',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type your Title`
+  String get typeYourTitle {
+    return Intl.message(
+      'Type your Title',
+      name: 'typeYourTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Complete task:`
+  String get completeTask {
+    return Intl.message(
+      'Complete task:',
+      name: 'completeTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Time`
+  String get startTime {
+    return Intl.message(
+      'Start Time',
+      name: 'startTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your start time`
+  String get enterYourStartTime {
+    return Intl.message(
+      'Enter your start time',
+      name: 'enterYourStartTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End Time`
+  String get endTime {
+    return Intl.message(
+      'End Time',
+      name: 'endTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter your end time`
+  String get enterYourEndTime {
+    return Intl.message(
+      'Enter your end time',
+      name: 'enterYourEndTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get note {
+    return Intl.message(
+      'Note',
+      name: 'note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Category`
+  String get category {
+    return Intl.message(
+      'Category',
+      name: 'category',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Document`
+  String get document {
+    return Intl.message(
+      'Document',
+      name: 'document',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update task`
+  String get updateTask {
+    return Intl.message(
+      'Update task',
+      name: 'updateTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create Task`
+  String get createTask {
+    return Intl.message(
+      'Create Task',
+      name: 'createTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Profile`
+  String get editProfile {
+    return Intl.message(
+      'Edit Profile',
+      name: 'editProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User Name`
+  String get userName {
+    return Intl.message(
+      'User Name',
+      name: 'userName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout`
+  String get logout {
+    return Intl.message(
+      'Logout',
+      name: 'logout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get edit {
+    return Intl.message(
+      'Edit',
+      name: 'edit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -137,6 +407,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'vi'),
     ];
   }
 

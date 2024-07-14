@@ -42,7 +42,7 @@ class _AddCategoryWidgetState extends State<AddCategoryWidget> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Add New Categorys',
+          'Edit New Categorys',
           style: TextStyle(
             color: const Color(0xff303030),
             fontSize: 20.r,
