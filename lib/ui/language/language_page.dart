@@ -1,21 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:untitled1/cubit/app/app_config_bloc.dart';
 import 'package:untitled1/generated/l10n.dart';
-import 'package:untitled1/models/enum/choose_photo_type.dart';
 import 'package:untitled1/navigator/routes.dart';
-import 'package:untitled1/shared_view/app_avatar_default.dart';
-import 'package:untitled1/shared_view/app_cache_image.dart';
-import 'package:untitled1/shared_view/app_circle_avatar.dart';
-import 'package:untitled1/shared_view/bottom_sheet_picker_photo_type.dart';
-import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
-import 'package:untitled1/ui/profile/profile_cubit.dart';
-import 'package:untitled1/utils/app_permission_utils.dart';
+import 'package:untitled1/ui/language/language_cubit.dart';
+import 'package:untitled1/utils/locale_extension.dart';
 
 class LanguagePage extends StatefulWidget {
   const LanguagePage({super.key});
@@ -25,167 +16,158 @@ class LanguagePage extends StatefulWidget {
 }
 
 class _LanguagePageState extends State<LanguagePage> {
-  late ProfileCubit cubit;
+  late AppConfigBloc _appConfigBloc;
 
   @override
   void initState() {
-    cubit = BlocProvider.of<ProfileCubit>(context);
-    cubit.initData(context);
+    _appConfigBloc = BlocProvider.of<AppConfigBloc>(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: () {
-            AppNavigator.pop();
-          },
-          child: Icon(Icons.arrow_back_ios),
-        ),
-        title: Text('Language'),
-      ),
-      body: _buildBodyWidget(),
-    );
-  }
-
-  Widget _buildBodyWidget() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.w),
-      child: ListView.builder(
-        itemCount: S.of(context).,
-      ),
-    );
-  }
-
-  Widget _buildAvatar({
-    required String networkAvatar,
-    String? localAvatarPath,
-  }) {
-    final isLocalAvatar = localAvatarPath != null && localAvatarPath.isNotEmpty;
-    File? localAvatarFile;
-
-    if (isLocalAvatar) {
-      localAvatarFile = File(localAvatarPath);
-    }
-    return Stack(
-      children: [
-        SizedBox(
-          child: !isLocalAvatar && networkAvatar.isNotEmpty
-              ? AppCircleAvatar(
-                  size: 195,
-                  url: networkAvatar,
+    return BlocProvider(
+      create: (context) => LanguageCubit(_appConfigBloc.state.locale),
+      child: Builder(
+        builder: (context) {
+          LanguageCubit languageCubit = BlocProvider.of<LanguageCubit>(context);
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              centerTitle: true,
+              leading: CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  AppNavigator.pop();
+                },
+                child: const Icon(Icons.arrow_back_ios),
+              ),
+              title: const Text('Language'),
+              actions: [
+                CupertinoButton(
+                  onPressed: () {
+                        _appConfigBloc.add(UpdateLocaleEvent(
+                            locale: languageCubit.state));
+                    AppNavigator.pop();
+                  },
+                  child: const Icon(
+                      Icons.check
+                  ),
                 )
-              : isLocalAvatar && localAvatarPath.isNotEmpty
-                  ? Container(
-                      height: 194,
-                      width: 194,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFe6e6e6),
-                        borderRadius: BorderRadius.circular(194 / 2),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(194 / 2),
-                        child: Image.file(
-                          localAvatarFile!,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )
-                  : const AppAvatarDefault(
-                      size: 195,
-                    ),
-        ),
-        Positioned(
-          right: 3,
-          bottom: 10,
-          child: InkWell(
-            onTap: () {
-              _showBottomSheetPickTypeSelectImage();
-            },
-            child: Container(
-              height: 36,
-              width: 36,
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: Color(0xFF212121).withOpacity(0.4),
-              ),
-              child: const Icon(
-                Icons.camera_alt_outlined,
-                color: Colors.white,
-                size: 25,
-              ),
+              ],
             ),
+            body: _buildBodyWidget(languageCubit),
+          );
+        }
+      ),
+    );
+  }
+
+  Widget _buildBodyWidget(LanguageCubit languageCubit) {
+    return
+        Padding(
+            padding: EdgeInsets.symmetric(horizontal: 25.w),
+            child: BlocBuilder<LanguageCubit, Locale>(
+              builder: (context, state) {
+                return ListView.builder(
+                  itemCount: S.delegate.supportedLocales.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        languageCubit.updateLanguageSelection(
+                            S.delegate.supportedLocales[index]);
+                      },
+                      child: S.delegate.supportedLocales[index] == state
+                          ? itemSelected(state, index)
+                          : itemLanguage(state, index),
+                    );
+                  },
+                );
+              },
+            ),
+          );
+  }
+
+  Widget itemSelected(Locale state, int index) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xff0AD0FF),
+            Color(0xffC84CFF),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(100.r),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(2.r),
+        child: Container(
+          height: 70.h,
+          padding: EdgeInsets.symmetric(horizontal: 40.w),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(100.r),
           ),
-        )
-      ],
+          child: Row(
+            children: [
+              Image.asset(
+                S.delegate.supportedLocales[index].logo,
+                height: 40.r,
+                width: 40.r,
+              ),
+              16.horizontalSpace,
+              Expanded(
+                child: Text(S.delegate.supportedLocales[index].getLocaleName,
+                    maxLines: 1,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24.r,
+                        fontWeight: FontWeight.w500)),
+              ),
+              Icon(
+                Icons.check,
+                size: 30.r,
+                color: Colors.white,
+              )
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Future<void> _showBottomSheetPickTypeSelectImage() async {
-    FocusScope.of(context).unfocus();
-    ChoosePhotoType? chooseType = await showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return const BottomSheetPickerPhotoType();
-      },
+
+  Widget itemLanguage(Locale state, int index) {
+    return Padding(
+      padding: EdgeInsets.all(2.r),
+      child: Container(
+        height: 70.h,
+        padding: EdgeInsets.symmetric(horizontal: 40.w),
+        decoration: BoxDecoration(
+          color: const Color(0xff2B2C2E),
+          borderRadius: BorderRadius.circular(100.r),
+        ),
+        child: Row(
+          children: [
+            Image.asset(
+              S.delegate.supportedLocales[index].logo,
+              height: 40.r,
+              width: 40.r,
+            ),
+            16.horizontalSpace,
+            Expanded(
+              child: Text(S.delegate.supportedLocales[index].getLocaleName,
+                  maxLines: 1,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 23.r,
+                      fontWeight: FontWeight.w500)),
+            ),
+          ],
+        ),
+      ),
     );
-    if (chooseType != null) {
-      switch (chooseType) {
-        case ChoosePhotoType.gallery:
-          _pickPhotoFromLibrary();
-          break;
-        case ChoosePhotoType.camera:
-          _pickPhotoFromCamera();
-          break;
-      }
-    }
   }
 
-  Future<void> _pickPhotoFromLibrary() async {
-    final isDenied = await AppPermissionUtils.askPhotoLibraryPermission(() {
-      // TODO: - show dialog permission denied
-    });
-    if (isDenied) return;
-    final ImagePicker picker = ImagePicker();
-    final XFile? imageFile =
-        await picker.pickImage(source: ImageSource.gallery);
-    if (imageFile == null) return;
-    File file = File(imageFile.path);
-    cubit.onChangeAvatar(file);
-    print('Image uploaded to Firebase Storage: ');
-    // try {
-    //   final storageRef = FirebaseStorage.instance.ref();
-    //   final name = file.path.split('/').last;
-    //   final imagesRef = storageRef.child('images/$name');
-    //   final snap = await imagesRef.putFile(file);
-    //   final urlFile = await snap.ref.getDownloadURL();
-    //   print('Image uploaded to Firebase Storage: $urlFile');
-    // } on FirebaseException catch (e) {
-    //   print(e);
-    // }
-  }
-
-  Future<void> _pickPhotoFromCamera() async {
-    final isDenied = await AppPermissionUtils.askPhotoLibraryPermission(() {
-      // TODO: - show dialog permission denied
-    });
-    if (isDenied) return;
-
-    final ImagePicker picker = ImagePicker();
-    final XFile? imageFile = await picker.pickImage(source: ImageSource.camera);
-
-    if (imageFile == null) return;
-    File file = File(imageFile.path);
-    cubit.onChangeAvatar(file);
-  }
 }

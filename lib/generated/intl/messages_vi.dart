@@ -21,5 +21,54 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'vi';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{};
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "category": MessageLookupByLibrary.simpleMessage("Danh Mục"),
+        "complete": MessageLookupByLibrary.simpleMessage("Hoàn Thành"),
+        "completeTask":
+            MessageLookupByLibrary.simpleMessage("Hoàn thành nhiệm vụ:"),
+        "completeYourTaskToday": MessageLookupByLibrary.simpleMessage(
+            "Hoàn thành nhiệm vụ của bạn hôm nay"),
+        "createTask": MessageLookupByLibrary.simpleMessage("Tạo Nhiệm Vụ"),
+        "deleteTasks": MessageLookupByLibrary.simpleMessage("Xóa Nhiệm Vụ"),
+        "doYouWantToDeleteThisTask": MessageLookupByLibrary.simpleMessage(
+            "Bạn có muốn xóa nhiệm vụ này không?"),
+        "document": MessageLookupByLibrary.simpleMessage("Tài Liệu"),
+        "edit": MessageLookupByLibrary.simpleMessage("Chỉnh Sửa"),
+        "editProfile": MessageLookupByLibrary.simpleMessage("Chỉnh Sửa Hồ Sơ"),
+        "endTime": MessageLookupByLibrary.simpleMessage("Thời Gian Kết Thúc"),
+        "enterYourEndTime": MessageLookupByLibrary.simpleMessage(
+            "Nhập thời gian kết thúc của bạn"),
+        "enterYourStartTime": MessageLookupByLibrary.simpleMessage(
+            "Nhập thời gian bắt đầu của bạn"),
+        "hello": MessageLookupByLibrary.simpleMessage("Xin Chào,"),
+        "inProgress": MessageLookupByLibrary.simpleMessage("Đang Tiến Hành"),
+        "logIn": MessageLookupByLibrary.simpleMessage("Đăng Nhập"),
+        "logout": MessageLookupByLibrary.simpleMessage("Đăng Xuất"),
+        "myCategory": MessageLookupByLibrary.simpleMessage("Danh Mục Của Tôi"),
+        "no": MessageLookupByLibrary.simpleMessage("Không"),
+        "note": MessageLookupByLibrary.simpleMessage("Ghi Chú"),
+        "save": MessageLookupByLibrary.simpleMessage("Lưu"),
+        "searchYourTask":
+            MessageLookupByLibrary.simpleMessage("Tìm Kiếm Nhiệm Vụ Của Bạn"),
+        "signUp": MessageLookupByLibrary.simpleMessage("Đăng Ký"),
+        "startTime": MessageLookupByLibrary.simpleMessage("Thời Gian Bắt Đầu"),
+        "task": MessageLookupByLibrary.simpleMessage("Nhiệm Vụ"),
+        "text_field_can_empty": MessageLookupByLibrary.simpleMessage(
+            "Trường này không được để trống"),
+        "text_input_email_valid":
+            MessageLookupByLibrary.simpleMessage("Vui lòng nhập email hợp lệ"),
+        "text_input_phone_number_valid": MessageLookupByLibrary.simpleMessage(
+            "Vui lòng nhập số điện thoại hợp lệ"),
+        "text_input_url_valid":
+            MessageLookupByLibrary.simpleMessage("Vui lòng nhập URL hợp lệ"),
+        "typeYourTitle":
+            MessageLookupByLibrary.simpleMessage("Nhập Tiêu Đề Của Bạn"),
+        "updateTask": MessageLookupByLibrary.simpleMessage("Cập Nhật Nhiệm Vụ"),
+        "userName": MessageLookupByLibrary.simpleMessage("Tên Người Dùng"),
+        "usernameOrEmail":
+            MessageLookupByLibrary.simpleMessage("Tên Người Dùng hoặc Email"),
+        "valitae_pasword": MessageLookupByLibrary.simpleMessage(
+            "Mật khẩu không thể ít hơn 8 ký tự"),
+        "yes": MessageLookupByLibrary.simpleMessage("Có")
+      };
 }

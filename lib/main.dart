@@ -9,6 +9,7 @@ import 'package:untitled1/cubit/app/app_config_bloc.dart';
 import 'package:untitled1/firebase_options.dart';
 import 'package:untitled1/ui/category/category_cubit.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
+import 'package:untitled1/ui/language/language_cubit.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
 import 'package:untitled1/ui/search/search_cubit.dart';
 import 'package:untitled1/ui/user_authentication/user_authentication_cubit.dart';
