@@ -8,6 +8,7 @@ import 'package:untitled1/models/enum/task_type.dart';
 import 'package:untitled1/models/model/categories.dart';
 import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/navigator/routes.dart';
+import 'package:untitled1/service/notification_service.dart';
 import 'package:untitled1/shared_view/dialog_builder.dart';
 import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/home/components/nav_drawer.dart';
@@ -36,6 +37,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
     );
     cubit.initData(context);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      NotificationService().requestIOSPermissions();
+    });
     super.initState();
   }
 
@@ -234,7 +238,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       scrollDirection: Axis.horizontal,
                       itemCount: state.categories.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return itemCategory(state.categories[index], index, state.taskByCategory[index].length);
+                        return itemCategory(state.categories[index], index,);
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return SizedBox(width: 15.w);
@@ -471,7 +475,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget itemCategory(
     Categories category,
     int index,
-    int task,
   ) {
     return CupertinoButton(
       padding: EdgeInsets.zero,
@@ -506,7 +509,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${task} task',
+              ' task',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
                 fontSize: 15.r,

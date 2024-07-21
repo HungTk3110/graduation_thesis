@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:open_file/open_file.dart';
 import 'package:untitled1/generated/l10n.dart';
 import 'package:untitled1/models/enum/choose_document_type.dart';
 import 'package:untitled1/models/enum/task_type.dart';
@@ -19,7 +20,6 @@ import 'package:untitled1/shared_view/widget/app_label_text_field.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
 import 'package:untitled1/ui/task/task_argument.dart';
 import 'package:untitled1/ui/task/task_cubit.dart';
-import 'package:untitled1/utils/app_permission_utils.dart';
 
 class TaskPage extends StatefulWidget {
   final TaskArgument? taskArgument;
@@ -55,7 +55,7 @@ class _TaskPageState extends State<TaskPage> {
   void initCreate() {
     iconController =
         TextEditingController(text: widget.taskArgument?.task?.category ?? '');
-    titleController = TextEditingController(text: S.of(context).typeYourTitle);
+    titleController = TextEditingController(text: 'title');
     noteController = TextEditingController();
   }
 
@@ -69,6 +69,7 @@ class _TaskPageState extends State<TaskPage> {
     cubit.startTimeController.text = widget.taskArgument?.task?.dateStart ?? '';
     cubit.endTimeController.text = widget.taskArgument?.task?.dateEnd ?? '';
     cubit.changeDoneTask(widget.taskArgument?.task?.doneTask ?? false);
+    debugPrint('Hungtk${widget.taskArgument?.task?.documents}');
   }
 
   @override
@@ -120,8 +121,8 @@ class _TaskPageState extends State<TaskPage> {
                               context: context,
                               builder: (BuildContext context) =>
                                   CupertinoAlertDialog(
-                                title:  Text(S.of(context).deleteTasks),
-                                content:  Text(
+                                title: Text(S.of(context).deleteTasks),
+                                content: Text(
                                     S.of(context).doYouWantToDeleteThisTask),
                                 actions: <CupertinoDialogAction>[
                                   CupertinoDialogAction(
@@ -129,7 +130,7 @@ class _TaskPageState extends State<TaskPage> {
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child:  Text(S.of(context).no,
+                                    child: Text(S.of(context).no,
                                         style: TextStyle(color: Colors.black)),
                                   ),
                                   CupertinoDialogAction(
@@ -141,7 +142,7 @@ class _TaskPageState extends State<TaskPage> {
                                         context: context,
                                       );
                                     },
-                                    child:  Text(S.of(context).yes),
+                                    child: Text(S.of(context).yes),
                                   ),
                                 ],
                               ),
@@ -407,6 +408,71 @@ class _TaskPageState extends State<TaskPage> {
                       )
                     ],
                   ),
+                  SizedBox(
+                    child: BlocBuilder<TaskCubit, TaskState>(
+                      builder: (BuildContext context, TaskState state) {
+                        return ListView.separated(
+                          itemCount: widget.taskArgument?.task?.documents?.length ?? 0,
+                          shrinkWrap: true,
+                          reverse: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            String fileName =getFileName(widget.taskArgument?.task?.documents?[index].toString()?? '');
+                            return GestureDetector(
+                              onTap: (){
+                                OpenFile.open(widget.taskArgument?.task?.documents?[index].toString()?? '');
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.file_open,
+                                    size: 30.r,
+                                  ),
+                                  SizedBox(width: 20.r),
+                                  Text(fileName, maxLines: 1),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(height: 20.h);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    child: BlocBuilder<TaskCubit, TaskState>(
+                      builder: (BuildContext context, TaskState state) {
+                        return ListView.separated(
+                          itemCount: state.listFile.length,
+                          shrinkWrap: true,
+                          reverse: true,
+                          itemBuilder: (BuildContext context, int index) {
+                            String fileName =
+                                state.listFile[index].path.split('/').last;
+                            return GestureDetector(
+                              onTap: (){
+                                OpenFile.open(state.listFile[index].path);
+                              },
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.file_open,
+                                    size: 30.r,
+                                  ),
+                                  SizedBox(width: 20.r),
+                                  Text(fileName, maxLines: 1),
+                                ],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(height: 20.h);
+                          },
+                        );
+                      },
+                    ),
+                  ),
                   SizedBox(height: 100.h),
                 ],
               ),
@@ -436,7 +502,7 @@ class _TaskPageState extends State<TaskPage> {
                     note: noteController,
                     category: iconController,
                     context: context,
-                    taskId: widget.taskArgument?.task?.id,
+                    taskId: widget.taskArgument?.task?.id, document: widget.taskArgument?.task?.documents ??[],
                   );
                 }
               },
@@ -448,7 +514,9 @@ class _TaskPageState extends State<TaskPage> {
                     borderRadius: BorderRadius.circular(15.r)),
                 child: Center(
                   child: Text(
-                    widget.taskArgument?.taskType == TaskType.edit ?S.of(context).updateTask :S.of(context).createTask,
+                    widget.taskArgument?.taskType == TaskType.edit
+                        ? S.of(context).updateTask
+                        : S.of(context).createTask,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18.r,
@@ -487,26 +555,38 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Future<void> _pickPhotoFromLibrary() async {
-    final isDenied = await AppPermissionUtils.askPhotoLibraryPermission(() {
-      // TODO: - show dialog permission denied
-    });
-    if (isDenied) return;
+    // final isDenied = await AppPermissionUtils.askPhotoLibraryPermission(() {
+    //   // TODO: - show dialog permission denied
+    // });
+    // if (isDenied) return;
     final ImagePicker picker = ImagePicker();
     final XFile? imageFile =
         await picker.pickImage(source: ImageSource.gallery);
     if (imageFile == null) return;
     File file = File(imageFile.path);
+    cubit.addFile(file);
     print('Image uploaded to Firebase Storage: ');
   }
 
   Future<void> _pickFile() async {
-    final isDenied = await AppPermissionUtils.askFileMediaPermission(() {
-      // TODO: - show dialog permission denied
-    });
-    if (isDenied) return;
+    // final isDenied = await AppPermissionUtils.askFileMediaPermission(() {
+    //   // TODO: - show dialog permission denied
+    // });
+    // if (isDenied) return;
     FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result == null) return;
     File file = File(result.files.single.path!);
+    cubit.addFile(file);
+  }
+
+  String getFileName(String url) {
+    RegExp regExp = new RegExp(r'.+(\/|%2F)(.+)\?.+');
+    //This Regex won't work if you remove ?alt...token
+    var matches = regExp.allMatches(url);
+
+    var match = matches.elementAt(0);
+    print("${Uri.decodeFull(match.group(2)!)}");
+    return Uri.decodeFull(match.group(2)!);
   }
 }

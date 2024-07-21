@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class TaskEntity {
   dynamic id;
   String? title;
@@ -6,7 +8,7 @@ class TaskEntity {
   String? dateEnd;
   String? note;
   String? category;
-  List<String>? documents;
+  List<dynamic>? documents;
   bool? doneTask;
 
   TaskEntity({
@@ -28,7 +30,8 @@ class TaskEntity {
     dateStart = obj?['dateStart'];
     dateEnd = obj?['dateEnd'];
     category = obj?['category'];
-    documents = obj?['documents'];
+    documents = List<String>.from(obj?['documents'] ?? []);
+    debugPrint('HUNGTK${obj?['documents']} - ${ List<String>.from(obj?['documents'] ?? [])}');
     note = obj?['note'];
     doneTask = obj?['doneTask'];
   }

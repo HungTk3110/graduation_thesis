@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +12,7 @@ import 'package:toastification/toastification.dart';
 import 'package:untitled1/firebase/firebase_helper.dart';
 import 'package:untitled1/models/model/task.dart';
 import 'package:untitled1/navigator/routes.dart';
+import 'package:untitled1/service/notification_service.dart';
 import 'package:untitled1/ui/home/home_cubit.dart';
 
 part 'task_state.dart';
@@ -52,6 +55,16 @@ class TaskCubit extends Cubit<TaskState> {
       taskEntity.category = category.text;
       final User? user = auth.currentUser;
       final uid = user?.uid;
+      List<String> documents = [];
+      List<File> list = state.listFile;
+      for(int i =0 ; i<list.length ; i++){
+        String fileUrl = await FireBaseHelper().getImageUrlByLocal(
+          userUid: uid ?? '',
+          file: File(list[i].path ?? ''),
+        );
+        documents.add(fileUrl);
+      }
+      taskEntity.documents = documents;
       await FireBaseHelper().addTask(
         uid: uid ?? '',
         task: taskEntity,
@@ -155,6 +168,7 @@ class TaskCubit extends Cubit<TaskState> {
     required TextEditingController note,
     required TextEditingController category,
     required BuildContext context,
+    required List<dynamic> document,
   }) async {
     try {
       TaskEntity taskEntity = state.taskEntity ?? TaskEntity();
@@ -168,6 +182,16 @@ class TaskCubit extends Cubit<TaskState> {
       taskEntity.id = taskId;
       final User? user = auth.currentUser;
       final uid = user?.uid;
+      List<dynamic> documents = document;
+      List<File> list = state.listFile;
+      for(int i =0 ; i<list.length ; i++){
+        String fileUrl = await FireBaseHelper().getImageUrlByLocal(
+          userUid: uid ?? '',
+          file: File(list[i].path ?? ''),
+        );
+        documents.add(fileUrl);
+      }
+      taskEntity.documents = documents;
       await FireBaseHelper().updateTask(
         uid: uid ?? '',
         task: taskEntity.toDbMap(),
@@ -184,5 +208,12 @@ class TaskCubit extends Cubit<TaskState> {
       );
     } catch (e) {
     }
+  }
+
+  void addFile(File file){
+    List<File> listFile = state.listFile;
+    List<File> listFileNew = [...listFile,file];
+    emit(state.copyWith(listFile:listFileNew ));
+    debugPrint('hungtk${listFile.length}');
   }
 }
