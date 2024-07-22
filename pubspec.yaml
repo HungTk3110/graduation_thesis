@@ -53,7 +53,7 @@ dependencies:
   stylish_bottom_bar: ^1.0.3
   circle_nav_bar: ^2.0.1+1
   in_app_review: ^2.0.6
-  flutter_local_notifications: ^14.1.1
+  flutter_local_notifications: ^13.0.0
   device_info_plus: ^10.1.0
   version: ^3.0.2
   app_tracking_transparency: ^2.0.4

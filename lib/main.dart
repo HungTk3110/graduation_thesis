@@ -14,16 +14,19 @@ import 'package:untitled1/ui/language/language_cubit.dart';
 import 'package:untitled1/ui/profile/profile_cubit.dart';
 import 'package:untitled1/ui/search/search_cubit.dart';
 import 'package:untitled1/ui/user_authentication/user_authentication_cubit.dart';
+import 'package:timezone/data/latest.dart' as tz;
+
 
 void main() async{
   await ScreenUtil.ensureScreenSize();
+  tz.initializeTimeZones();
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
       storageDirectory: await getTemporaryDirectory());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  NotificationService().initNotification();
+  LocalNotificationService().initNotification();
 
   runApp(
     MultiBlocProvider(

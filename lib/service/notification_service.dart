@@ -1,164 +1,91 @@
 import 'dart:io';
-import 'dart:math';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tzData;
+import 'package:timezone/timezone.dart' as tz;
 
-import '../../../generated/l10n.dart';
-
-class NotificationService {
-  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+// Docs: https://firebase.flutter.dev/docs/messaging/notifications#foreground-notifications
+class LocalNotificationService {
+  final FlutterLocalNotificationsPlugin notificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
   Future<void> initNotification() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-    const AndroidInitializationSettings("defaultIcon");
+    const AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSettingsIOS = DarwinInitializationSettings(
         requestAlertPermission: false,
         requestBadgePermission: false,
         requestSoundPermission: false,
         onDidReceiveLocalNotification:
-            (int id, String? title, String? body, String? payload) async {
+            (int id, String? title, String? body, String? payload) async {});
 
-        }
-    );
     var initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
-    await _notificationsPlugin.initialize(initializationSettings,
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    await notificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse:
-            (NotificationResponse notificationResponse) async {
-
-        });
-
-    _configureLocalTimeZone();
-  }
-
-  tz.TZDateTime _getTzTime(int time) {
-    tzData.initializeTimeZones();
-    return tz.TZDateTime.fromMillisecondsSinceEpoch(tz.local, time);
-  }
-
-
-  Future<void> showNotification({
-    int id = 0,
-    String? title,
-    String? body,
-    String? payload,
-    BuildContext? context
-  }) async {
-    return _notificationsPlugin.show(
-        id,
-        title,
-        body,
-        await notificationDetails()
-    );
-  }
-
-  Future<File> getImageFileFromAssets(String path) async {
-    final byteData = await rootBundle.load(path);
-    final file =
-    File('${(await getTemporaryDirectory()).path}/${path.split("/").last}');
-    debugPrint("haudau path = ${file.path}");
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-    return file;
-  }
-
-  Future<bool> checkExits(String filePath) async {
-    File file = File(filePath);
-    bool fileExists = file.existsSync();
-    return fileExists;
-  }
-
-  Future<void> showNotificationWithTime({int id = 0}) async {
-    var title = "";
-    var body = "";
-    title = "LocalDataNotification.titlesEN[index]";
-    body = "LocalDataNotification.contentsEn[index]";
-    // var images = LocalDataNotification.images[index];
-    // var byteData = await rootBundle.load("assets/image/img_banner_export.webp");
-    // final attachmentPicturePath = await getImageFileFromAssets(images);
-
-    // var exits = await checkExits(attachmentPicturePath.path);
-    // late DarwinNotificationDetails darwinNotificationDetails;
-    // if (exits) {
-    //   darwinNotificationDetails =
-    //       DarwinNotificationDetails(attachments: <DarwinNotificationAttachment>[
-    //     DarwinNotificationAttachment(
-    //       attachmentPicturePath.path,
-    //       hideThumbnail: false,
-    //     )
-    //   ]);
-    // } else {
-    //   darwinNotificationDetails = const DarwinNotificationDetails();
-    // }
-
-    await _notificationsPlugin.zonedSchedule(
-        id,
-        title,
-        body,
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-        const NotificationDetails(
-          android: AndroidNotificationDetails('channel_id', 'channel_name'),
-        ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time
-    );
+            (NotificationResponse notificationResponse) async {});
   }
 
   notificationDetails() {
+    const androidDetail = AndroidNotificationDetails(
+      "channelId",
+      "channelName",
+      channelDescription: "channelDescription",
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+    );
     return const NotificationDetails(
-        android: AndroidNotificationDetails('channelId', 'channelName',
-            importance: Importance.max
+        android:
+        // AndroidNotificationDetails('channelId', 'channelName',
+        //     importance: Importance.max),
+        androidDetail,
+        iOS: DarwinNotificationDetails());
+  }
+
+  Future showNotification(
+      {int id = 0, String? title, String? body, String? payLoad}) async {
+    return notificationsPlugin.show(
+        id, title, body, await notificationDetails());
+  }
+
+  Future scheduleNotification(
+      {int id = 0,
+        String? title,
+        String? body,
+        String? payLoad}) async {
+    DateTime now =  tz.TZDateTime.now(tz.local);
+    return notificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        tz.TZDateTime.from(
+          DateTime(now.year,now.month,now.day,now.hour,now.second),
+          tz.local,
         ),
-        iOS: DarwinNotificationDetails()
-    );
+        await notificationDetails(),
+        androidAllowWhileIdle: true,
+        matchDateTimeComponents: DateTimeComponents.time,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime);
   }
 
-  Future<void> requestIOSPermissions() async {
-    await _notificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>()
-        ?.requestPermissions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  }
-
-  cancelAll() async => await _notificationsPlugin.cancelAll();
-
-  cancel(id) async => await _notificationsPlugin.cancel(id);
-
-  Future<void> _configureLocalTimeZone() async {
-    // tz.initializeTimeZones();
-  }
-
-  /// Set right date and time for notifications
-  tz.TZDateTime _convertTime(int hour, int minutes) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduleDate = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minutes,
-    );
-    if (scheduleDate.isBefore(now)) {
-      scheduleDate = scheduleDate.add(const Duration(days: 1));
+  Future<bool?> requestPermissions() async {
+    if(Platform.isIOS){
+      return await notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true
+      );
+    } else {
+      return await notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestPermission();
     }
-    debugPrint(
-        "NOTIFICATION schedule time =  ${scheduleDate.hour}  |  ${scheduleDate.minute} | ${scheduleDate.day}"
-    );
-    return scheduleDate;
   }
 }

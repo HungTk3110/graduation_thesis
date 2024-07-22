@@ -70,6 +70,7 @@ class TaskCubit extends Cubit<TaskState> {
         task: taskEntity,
       );
       await context.read<HomeCubit>().getAllTask();
+      LocalNotificationService().scheduleNotification();
       AppNavigator.push(Routes.home);
       toastification.show(
         context: context,

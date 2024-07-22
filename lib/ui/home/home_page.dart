@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
     cubit.initData(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      NotificationService().requestIOSPermissions();
+      LocalNotificationService().requestPermissions();
     });
     super.initState();
   }
